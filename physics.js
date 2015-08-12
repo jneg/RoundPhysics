@@ -1,9 +1,15 @@
+// Elements
 var cvs, ctx;
 var prev = 0, dt;
 var particles = [];
-var windVelocity = new Vector(10, 0);
-var gConstant = 1200;
 
+// Constants
+var windVelocity = new Vector(100, 0);
+var gConstant = 1500;
+
+// Initializes the animation by grabbing the canvas element, setting
+// cross-browser support for the animation frame function, adding
+// particles and starting the animation.
 function init() {
    cvs = document.getElementById('cvs');
    ctx = cvs.getContext('2d');
@@ -12,6 +18,7 @@ function init() {
    window.requestAnimFrame(animate);
 }
 
+// Sets the window.requestAnimFrame function for cross-browser support.
 function setAnimFrame() {
    window.requestAnimFrame =
     window.requestAnimationFrame ||
@@ -23,6 +30,7 @@ function setAnimFrame() {
     };
 }
 
+// Adds particles onto the |particles| array.
 function addParticles() {
    particles.length = 0;
 
@@ -33,6 +41,7 @@ function addParticles() {
    particles.push(new Particle(2, 20, 'red', 1000, 80));
 }
 
+// Main event loop which gets called before every frame.
 function animate(timestamp) {
    dt = prev > 0 ? (timestamp - prev) / 1000 : 0;
    prev = timestamp;
@@ -48,12 +57,14 @@ function animate(timestamp) {
    window.requestAnimFrame(animate);
 }
 
+// Applies a drag force of |velocity| scaled by |dt| to every Particle.
 function wind(velocity, dt) {
    particles.forEach(function(particle) {
       particle.dragForce(velocity, dt);
    });
 }
 
+// Applies a gravity force of |strength| to each Particle.
 function gravity(strength, dt) {
    particles.forEach(function(particle) {
       particle.applyForce(Vector.scale(new Vector(0, strength * particle.mass),
@@ -61,12 +72,15 @@ function gravity(strength, dt) {
    });
 }
 
+// Updates the position of every Particle.
 function updatePositions(dt) {
    particles.forEach(function(particle) {
       particle.updatePosition(dt);
    });
 }
 
+// Collision detection
+// Still in work
 function detectCollisions() {
    for (var i = 0; i < particles.length; ++i) {
       for (var j = i + 1; j < particles.length; ++j) {
@@ -80,6 +94,7 @@ function detectCollisions() {
    }
 }
 
+// Colors the whole canvas with |color|.
 function clearCanvas(color) {
    ctx.save();
 
@@ -91,12 +106,14 @@ function clearCanvas(color) {
    ctx.restore();
 }
 
+// Draws every Particle in |particles| onto the canvas.
 function drawParticles() {
    particles.forEach(function(particle) {
       drawParticle(particle);
    });
 }
 
+// Draws Particle |particle| onto the canvas.
 function drawParticle(particle) {
    ctx.save();
 
