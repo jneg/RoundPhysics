@@ -4,7 +4,7 @@ var prev = 0, dt;
 var particles = [];
 
 // Constants
-var windVelocity = new Vector(100, 0);
+var windVelocity = new Vector(500, 0);
 var gConstant = 1500;
 
 // Initializes the animation by grabbing the canvas element, setting
@@ -60,7 +60,7 @@ function animate(timestamp) {
 // Applies a drag force of |velocity| scaled by |dt| to every Particle.
 function wind(velocity, dt) {
    particles.forEach(function(particle) {
-      particle.dragForce(velocity, dt);
+      particle.applyForce(Vector.scale(particle.dragForce(velocity), dt));
    });
 }
 
@@ -79,8 +79,7 @@ function updatePositions(dt) {
    });
 }
 
-// Collision detection
-// Still in work
+// Collision detection in progress
 function detectCollisions() {
    for (var i = 0; i < particles.length; ++i) {
       for (var j = i + 1; j < particles.length; ++j) {

@@ -25,12 +25,12 @@ Particle.prototype.applyForce = function(force) {
    }
 }
 
-// Applies a drag force to |this| particle effectively accelerating it.
+// Returns the drag force Vector of |this| particle based on the |velocity|.
 // The drag force consists of a coefficient times the density of the particle
 // times the diameter of the circle times the |velocity| Vector squared.
 Particle.prototype.dragForce = function(velocity) {
-   this.applyForce(Vector.scale(velocity, velocity.distance() * 0.23 *
-    this.density() * this.diameter()));
+   return Vector.scale(velocity, velocity.distance() * 0.23 *
+    this.density() * this.diameter());
 }
 
 // Returns the diameter of |this| particle.
