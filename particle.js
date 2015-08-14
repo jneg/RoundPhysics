@@ -1,60 +1,61 @@
-// Constructs a Particle instance of |mass|, |radius|, |color|, and
-// position |x| and |y| with a velocity Vector of (0, 0).
-// A Particle instance is essentially a circle with properties to
-// visualize on-screen and interact with physical laws.
+// Constructs a Particle instance of |mass| Number, |radius| Number,
+// |color| String, |pos| Vec2 of |x| and |y|, and |vel| Vec2 of 0 and 0.
+// A Particle instance is a circle with visual and physical properties.
 function Particle(mass, radius, color, x, y) {
-   this.mass = mass || 1;
-   this.radius = radius || 10;
-   this.color = color || '#FFFFFF';
-   this.pos = new Vector(x, y);
-   this.vel = new Vector(0, 0);
+   this.mass = mass;
+   this.radius = radius;
+   this.color = color;
+   this.pos = new Vec2(x, y);
+   this.vel = new Vec2(0, 0);
 }
 
-// Adds |this| velocity scaled by |dt| to |this| position.
-Particle.prototype.updatePosition = function(dt) {
-   if (dt) {
-      this.pos.add(Vector.scale(this.vel, dt));
-   }
-}
-
-// Applies a |force| Vector to |this| particle effectively accelerating it.
-// Adds the acceleration vector, F / m, to |this| velocity.
-Particle.prototype.applyForce = function(force) {
-   if (force) {
-      this.vel.add(Vector.scale(force, 1 / this.mass));
-   }
-}
-
-// Returns the drag force Vector of |this| particle based on the |velocity|.
-// The drag force consists of a coefficient times the density of the particle
-// times the diameter of the circle times the |velocity| Vector squared.
-Particle.prototype.dragForce = function(velocity) {
-   return Vector.scale(velocity, velocity.distance() * 0.23 *
-    this.density() * this.diameter());
-}
-
-// Returns the diameter of |this| particle.
+// Returns the diameter of |this| Particle.
 Particle.prototype.diameter = function() {
    return this.radius + this.radius;
 }
 
-// Returns the area of |this| particle.
+// Returns the area of |this| Particle.
 Particle.prototype.area = function() {
    return Math.PI * this.radius * this.radius;
 }
 
-// Returns the density of |this| particle.
+// Returns the density of |this| Particle.
 Particle.prototype.density = function() {
    return this.mass / this.area();
 }
 
-// Returns the momentum of |this| particle.
-Particle.prototype.momentum = function() {
-   return Vector.scale(this.vel, this.mass);
+// Draws |this| Particle onto the |ctx| CanvasRenderingContext2D.
+Particle.prototype.draw = function(ctx) {
+   ctx.beginPath();
+   ctx.arc(this.pos.x, this.pos.y, this.radius, 0, 2 * Math.PI);
+   ctx.fillStyle = this.color;
+   ctx.fill();
 }
 
-// Returns the kinetic energy of |this| particle.
-Particle.prototype.kineticEnergy = function() {
-   var absVel = this.vel.distance();
-   return 0.5 * this.mass * absVel * absVel;
+// Adds |this.vel| velocity Vec2 scaled by |dt| Number to
+// |this.pos| position Vec2.
+Particle.prototype.updatePosition = function(dt) {
+   this.pos.mutableAdd(this.vel.scale(dt));
+}
+
+// Adds the acceleration Vec2, |force| Vec2 divided by |this.mass| Number,
+// to |this.vel| Vec2.
+Particle.prototype.applyForce = function(force) {
+   this.vel.mutableAdd(force.scale(1 / this.mass));
+}
+
+// Returns the gravitational force Vec2 for |this| Particle derived from
+// the grativational constant Number, |this.mass| Number, the external mass
+// |extMass| Number, and the |distance| Number between the masses.
+Particle.prototype.gravitationalForce = function(extMass, distance) {
+   return new Vec2(0, 6.674 * Math.pow(10, -11) * this.mass * extMass /
+    (distance * distance));
+}
+
+// Returns the drag force Vec2 for |this| Particle derived from the
+// |velocity| Vec2, a coefficient Number, |this.density()| Number, and
+// |this.diameter()| Number.
+Particle.prototype.dragForce = function(velocity) {
+   return velocity.scale(velocity.length() * 0.23 *
+    this.density() * this.diameter());
 }

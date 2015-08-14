@@ -4,8 +4,9 @@ var prev = 0, dt;
 var particles = [];
 
 // Constants
-var windVelocity = new Vector(500, 0);
-var gConstant = 1500;
+var windVelocity = new Vec2(500, 0);
+var earthMass = 180 * 5.972 * Math.pow(10, 24);
+var earthRadius = 6.371 * Math.pow(10, 6);
 
 // Initializes the animation by grabbing the canvas element, setting
 // cross-browser support for the animation frame function, adding
@@ -46,8 +47,8 @@ function animate(timestamp) {
    dt = prev > 0 ? (timestamp - prev) / 1000 : 0;
    prev = timestamp;
 
+   gravity(earthMass, earthRadius, dt);
    wind(windVelocity, dt);
-   gravity(gConstant, dt);
    detectCollisions();
    updatePositions(dt);
 
@@ -57,25 +58,20 @@ function animate(timestamp) {
    window.requestAnimFrame(animate);
 }
 
-// Applies a drag force of |velocity| scaled by |dt| to every Particle.
+// Applies a drag force derived from |velocity| scaled by |dt|
+// to every Particle.
 function wind(velocity, dt) {
    particles.forEach(function(particle) {
-      particle.applyForce(Vector.scale(particle.dragForce(velocity), dt));
+      particle.applyForce(particle.dragForce(velocity).scale(dt));
    });
 }
 
-// Applies a gravity force of |strength| to each Particle.
-function gravity(strength, dt) {
+// Applies a gravitational force derived from |extMass| and |distance|
+// scaled by |dt| to each Particle.
+function gravity(extMass, distance, dt) {
    particles.forEach(function(particle) {
-      particle.applyForce(Vector.scale(new Vector(0, strength * particle.mass),
-       dt));
-   });
-}
-
-// Updates the position of every Particle.
-function updatePositions(dt) {
-   particles.forEach(function(particle) {
-      particle.updatePosition(dt);
+      particle.applyForce(particle.gravitationalForce(extMass,
+       distance + (cvs.height - particle.pos.y)).scale(dt));
    });
 }
 
@@ -83,7 +79,7 @@ function updatePositions(dt) {
 function detectCollisions() {
    for (var i = 0; i < particles.length; ++i) {
       for (var j = i + 1; j < particles.length; ++j) {
-         if (Vector.distance(particles[i].pos, particles[j].pos) <
+         if (particles[i].pos.sub(particles[j].pos).length() <
           particles[i].radius + particles[j].radius) {
             // Colliding
          } else {
@@ -93,33 +89,24 @@ function detectCollisions() {
    }
 }
 
+// Updates the position of every Particle.
+function updatePositions(dt) {
+   particles.forEach(function(particle) {
+      particle.updatePosition(dt);
+   });
+}
+
 // Colors the whole canvas with |color|.
 function clearCanvas(color) {
-   ctx.save();
-
    ctx.beginPath();
    ctx.rect(0, 0, cvs.width, cvs.height);
    ctx.fillStyle = color;
    ctx.fill();
-
-   ctx.restore();
 }
 
 // Draws every Particle in |particles| onto the canvas.
 function drawParticles() {
    particles.forEach(function(particle) {
-      drawParticle(particle);
+      particle.draw(ctx);
    });
-}
-
-// Draws Particle |particle| onto the canvas.
-function drawParticle(particle) {
-   ctx.save();
-
-   ctx.beginPath();
-   ctx.arc(particle.pos.x, particle.pos.y, particle.radius, 0, 2 * Math.PI);
-   ctx.fillStyle = particle.color;
-   ctx.fill();
-
-   ctx.restore();
 }
