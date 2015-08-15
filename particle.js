@@ -41,7 +41,7 @@ Particle.prototype.inBounds = function(canvas) {
 // |windVel| Vec2 and |this.vel| Vec2.
 Particle.prototype.dragForce = function(windVel) {
    var velDiff = windVel.sub(this.vel);
-   return velDiff.scale(velDiff.length() * 0.23 * this.density() *
+   return velDiff.scale(velDiff.length() * 0.03 * this.density() *
     this.circumference() / 2);
 }
 

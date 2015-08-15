@@ -16,10 +16,14 @@ function RoundPhysics(canvas, gravity, wind) {
    this.context = canvas.getContext('2d');
    this.gravity = gravity;
    this.wind = wind;
-   this.energyRetained = 0.7;
+   this.energyRetained = 0.6;
    this.particles = [];
    this.dt = 0;
    this.prev = 0;
+
+   this.canvas.oncontextmenu = function(e) {
+      e.preventDefault();
+   }
 }
 
 // Add |particle| Particle into |this| RoundPhysics context.
