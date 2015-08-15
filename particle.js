@@ -37,6 +37,11 @@ Particle.prototype.inBounds = function(canvas) {
     this.pos.x + this.radius < canvas.width;
 }
 
+// Returns true if |point| Vec2 is inside |this| Particle.
+Particle.prototype.contains = function(point) {
+   return this.pos.sub(point).length() < this.radius;
+}
+
 // Returns the drag force Vec2 on |this| Particle derived from the
 // |windVel| Vec2, |this.vel| Vec2, |dragFriction| number, |this.density()|
 // Number, and |this.circumference()| Number.

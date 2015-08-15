@@ -11,20 +11,59 @@ window.requestAnimFrame =
 
 // Constructs a RoundPhysics context with the provided |canvas|
 // HTMLCanvasElement, |gravity| Vec2, and |wind| Vec2.
+// Sets the contextmenu to prevent default right click behavior.
+// Adds event listeners on the canvas to change |this.mouse| Vec2 property,
+// and set |this.grabbedParticle| Particle to the Particle a user grabs.
 function RoundPhysics(canvas, gravity, wind) {
    this.canvas = canvas;
-   this.context = canvas.getContext('2d');
+   this.viewport = this.canvas.getBoundingClientRect();
+   this.context = this.canvas.getContext('2d');
    this.gravity = gravity;
    this.wind = wind;
-   this.dragFriction = 0.03;
+   this.dragFriction = 0.02;
    this.energyRetained = 0.6;
-   this.particles = [];
    this.dt = 0;
    this.prev = 0;
+   this.mouse = new Vec2(0, 0);
+   this.grabbedParticle = null;
+   this.particles = [];
 
-   this.canvas.oncontextmenu = function(e) {
+   this.canvas.addEventListener('contextmenu', function(e) {
       e.preventDefault();
-   }
+   });
+
+   this.canvas.addEventListener('mousemove', (function(e) {
+      this.mouse = new Vec2(e.clientX - this.viewport.left,
+       e.clientY - this.viewport.top);
+   }).bind(this));
+
+   this.canvas.addEventListener('mousedown', (function(e) {
+      this.particles = this.particles.sort((function(ptcl1, ptcl2) {
+         var ptcl1Dist = ptcl1.pos.sub(this.mouse).length();
+         var ptcl2Dist = ptcl2.pos.sub(this.mouse).length();
+
+         if (ptcl1Dist < ptcl2Dist) {
+            return -1;
+         }
+
+         if (ptcl1Dist > ptcl2Dist) {
+            return 1;
+         }
+
+         return 0;
+      }).bind(this));
+
+      this.particles.some(function(particle) {
+         if (particle.contains(this.mouse)) {
+            this.grabbedParticle = particle;
+            return true;
+         }
+      }, this);
+   }).bind(this));
+
+   this.canvas.addEventListener('mouseup', (function(e) {
+      this.grabbedParticle = null;
+   }).bind(this));
 }
 
 // Add |particle| Particle into |this| RoundPhysics context.
@@ -78,6 +117,16 @@ RoundPhysics.prototype.applyWind = function() {
    }
 }
 
+// If there is a grabbed Particle, moves |this.grabbedParticle| Particle
+// to the mouse position and zeroes its velocity Vec2 in |this|
+// RoundPhysics context.
+RoundPhysics.prototype.applyMouse = function() {
+   if (this.grabbedParticle !== null) {
+      this.grabbedParticle.pos = new Vec2(this.mouse.x, this.mouse.y);
+      this.grabbedParticle.vel = new Vec2(0, 0);
+   }
+}
+
 // Updates the positions of all Particles in |this| RoundPhysics context.
 RoundPhysics.prototype.updatePositions = function() {
    this.particles.forEach(function(particle) {
@@ -99,7 +148,8 @@ RoundPhysics.prototype.draw = function(bgColor) {
 }
 
 // Function to execute for every frame of |this| RoundPhysics context.
-// Applies a graviational and wind impulse to all Particles, updates their
+// Checks all Particles bounds, applies a graviational and wind impulse to
+// all Particles, applies a mouse update if necessary, updates all Particles
 // positions, and finally draws the Particles.
 RoundPhysics.prototype.frame = function(timestamp) {
    this.dt = this.prev > 0 ? (timestamp - this.prev) / 1000 : 0;
@@ -108,6 +158,7 @@ RoundPhysics.prototype.frame = function(timestamp) {
    this.boundsChecking();
    this.applyGravity();
    this.applyWind();
+   this.applyMouse();
    this.updatePositions();
    this.draw('#111111');
 
