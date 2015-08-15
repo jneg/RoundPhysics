@@ -38,10 +38,11 @@ Particle.prototype.inBounds = function(canvas) {
 }
 
 // Returns the drag force Vec2 on |this| Particle derived from the
-// |windVel| Vec2 and |this.vel| Vec2.
-Particle.prototype.dragForce = function(windVel) {
+// |windVel| Vec2, |this.vel| Vec2, |dragFriction| number, |this.density()|
+// Number, and |this.circumference()| Number.
+Particle.prototype.dragForce = function(windVel, dragFriction) {
    var velDiff = windVel.sub(this.vel);
-   return velDiff.scale(velDiff.length() * 0.03 * this.density() *
+   return velDiff.scale(velDiff.length() * dragFriction * this.density() *
     this.circumference() / 2);
 }
 
