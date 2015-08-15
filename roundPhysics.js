@@ -16,6 +16,7 @@ function RoundPhysics(canvas, gravity, wind) {
    this.context = canvas.getContext('2d');
    this.gravity = gravity;
    this.wind = wind;
+   this.energyRetained = 0.6;
    this.particles = [];
    this.dt = 0;
    this.prev = 0;
@@ -26,21 +27,47 @@ RoundPhysics.prototype.addParticle = function(particle) {
    this.particles.push(particle);
 }
 
-// Applies a gravitational impulse to all Particles in |this| RoundPhysics
-// context.
+// Ensures that all Particles in |this| RoundPhysics context are
+// within bounds, if not modify its velocity to bounce back in bounds.
+RoundPhysics.prototype.boundsChecking = function() {
+   this.particles.forEach(function(particle) {
+      if (particle.pos.y + particle.radius >= this.canvas.height &&
+       particle.vel.y > 0) {
+         particle.vel.y *= -1 * Math.sqrt(this.energyRetained);
+      }
+
+      if (particle.pos.x + particle.radius >= this.canvas.width &&
+       particle.vel.x > 0) {
+         particle.vel.x *= -1 * Math.sqrt(this.energyRetained);
+      }
+
+      if (particle.pos.x - particle.radius <= 0 &&
+       particle.vel.x < 0) {
+         particle.vel.x *= -1 * Math.sqrt(this.energyRetained);
+      }
+   }, this);
+}
+
+// Applies a gravitational impulse to all Particles in bounds in 
+// |this| RoundPhysics context.
 RoundPhysics.prototype.applyGravity = function() {
    if (this.gravity) {
       this.particles.forEach(function(particle) {
-         particle.applyImpulse(this.gravity.scale(particle.mass * this.dt));
+         if (particle.inBounds(this.canvas)) {
+            particle.applyImpulse(this.gravity.scale(particle.mass * this.dt));
+         }
       }, this);
    }
 }
 
-// Applies a wind impulse to all Particles in |this| RoundPhysics context.
+// Applies a wind impulse to all Particles in bounds in |this|
+// RoundPhysics context.
 RoundPhysics.prototype.applyWind = function() {
    if (this.wind) {
       this.particles.forEach(function(particle) {
-         particle.applyImpulse(this.wind.scale(this.dt));
+         if (particle.inBounds(this.canvas)) {
+            particle.applyImpulse(this.wind.scale(this.dt));
+         }
       }, this);
    }
 }
@@ -72,6 +99,7 @@ RoundPhysics.prototype.frame = function(timestamp) {
    this.dt = this.prev > 0 ? (timestamp - this.prev) / 1000 : 0;
    this.prev = timestamp;
 
+   this.boundsChecking();
    this.applyGravity();
    this.applyWind();
    this.updatePositions();

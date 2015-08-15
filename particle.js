@@ -24,6 +24,12 @@ Particle.prototype.density = function() {
    return this.mass / this.area();
 }
 
+Particle.prototype.inBounds = function(canvas) {
+   return this.pos.y + this.radius < canvas.height &&
+    this.pos.x - this.radius > 0 &&
+    this.pos.x + this.radius < canvas.width;
+}
+
 // Adds the velocity Vec2, |impulse| Vec2 divided by |this.mass| Number,
 // to |this.vel| Vec2.
 Particle.prototype.applyImpulse = function(impulse) {
