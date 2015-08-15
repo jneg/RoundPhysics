@@ -16,7 +16,7 @@ function RoundPhysics(canvas, gravity, wind) {
    this.context = canvas.getContext('2d');
    this.gravity = gravity;
    this.wind = wind;
-   this.energyRetained = 0.6;
+   this.energyRetained = 0.7;
    this.particles = [];
    this.dt = 0;
    this.prev = 0;
@@ -66,7 +66,7 @@ RoundPhysics.prototype.applyWind = function() {
    if (this.wind) {
       this.particles.forEach(function(particle) {
          if (particle.inBounds(this.canvas)) {
-            particle.applyImpulse(this.wind.scale(this.dt));
+            particle.applyImpulse(particle.dragForce(this.wind).scale(this.dt));
          }
       }, this);
    }

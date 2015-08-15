@@ -9,25 +9,40 @@ function Particle(mass, radius, color, x, y) {
    this.vel = new Vec2(0, 0);
 }
 
-// Returns the diameter of |this| Particle.
+// Returns the diameter Number of |this| Particle.
 Particle.prototype.diameter = function() {
-   return this.radius + this.radius;
+   return 2 * this.radius;
 }
 
-// Returns the area of |this| Particle.
+// Returns the circumference Number of |this| Particle.
+Particle.prototype.circumference = function() {
+   return Math.PI * this.diameter();
+}
+
+// Returns the area Number of |this| Particle.
 Particle.prototype.area = function() {
    return Math.PI * this.radius * this.radius;
 }
 
-// Returns the density of |this| Particle.
+// Returns the area density Number of |this| Particle.
 Particle.prototype.density = function() {
    return this.mass / this.area();
 }
 
+// Returns true if |this| Particle is within the left, bottom, and right
+// bounds of the |canvas| HTMLCanvasElement.
 Particle.prototype.inBounds = function(canvas) {
    return this.pos.y + this.radius < canvas.height &&
     this.pos.x - this.radius > 0 &&
     this.pos.x + this.radius < canvas.width;
+}
+
+// Returns the drag force Vec2 on |this| Particle derived from the
+// |windVel| Vec2 and |this.vel| Vec2.
+Particle.prototype.dragForce = function(windVel) {
+   var velDiff = windVel.sub(this.vel);
+   return velDiff.scale(velDiff.length() * 0.23 * this.density() *
+    this.circumference() / 2);
 }
 
 // Adds the velocity Vec2, |impulse| Vec2 divided by |this.mass| Number,
