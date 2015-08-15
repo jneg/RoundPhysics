@@ -1,3 +1,4 @@
+// Make window.requestAnimFrame cross-browser supported
 window.requestAnimFrame =
  window.requestAnimationFrame ||
  window.webkitRequestAnimationFrame ||
@@ -8,6 +9,8 @@ window.requestAnimFrame =
     window.setTimeout(callback, 1000 / 60);
  };
 
+// Constructs a RoundPhysics context with the provided |canvas|
+// HTMLCanvasElement, |gravity| Vec2, and |wind| Vec2.
 function RoundPhysics(canvas, gravity, wind) {
    this.canvas = canvas;
    this.context = canvas.getContext('2d');
@@ -18,10 +21,13 @@ function RoundPhysics(canvas, gravity, wind) {
    this.prev = 0;
 }
 
+// Add |particle| Particle into |this| RoundPhysics context.
 RoundPhysics.prototype.addParticle = function(particle) {
    this.particles.push(particle);
 }
 
+// Applies a gravitational force to all Particles in |this| RoundPhysics
+// context.
 RoundPhysics.prototype.applyGravity = function() {
    if (this.gravity) {
       this.particles.forEach(function(particle) {
@@ -30,6 +36,7 @@ RoundPhysics.prototype.applyGravity = function() {
    }
 }
 
+// Applies a wind force to all Particles in |this| RoundPhysics context.
 RoundPhysics.prototype.applyWind = function() {
    if (this.wind) {
       this.particles.forEach(function(particle) {
@@ -38,12 +45,15 @@ RoundPhysics.prototype.applyWind = function() {
    }
 }
 
+// Updates the positions of all Particles in |this| RoundPhysics context.
 RoundPhysics.prototype.updatePositions = function() {
    this.particles.forEach(function(particle) {
       particle.updatePosition(this.dt);
    }, this)
 }
 
+// Clears the canvas with |bgColor| String and draws all Particles onto
+// the canvas of |this| RoundPhysics context.
 RoundPhysics.prototype.draw = function(bgColor) {
    this.context.beginPath();
    this.context.rect(0, 0, this.canvas.width, this.canvas.height);
@@ -55,6 +65,9 @@ RoundPhysics.prototype.draw = function(bgColor) {
    }, this);
 }
 
+// Function to execute for every frame of |this| RoundPhysics context.
+// Applies a graviational and wind force to all Particles, updates their
+// positions, and finally draws the Particles.
 RoundPhysics.prototype.frame = function(timestamp) {
    this.dt = this.prev > 0 ? (timestamp - this.prev) / 1000 : 0;
    this.prev = timestamp;
@@ -67,6 +80,7 @@ RoundPhysics.prototype.frame = function(timestamp) {
    window.requestAnimFrame(this.frame.bind(this));
 }
 
+// Starts |this| RoundPhysics context.
 RoundPhysics.prototype.start = function() {
    window.requestAnimFrame(this.frame.bind(this));
 }
