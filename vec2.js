@@ -36,20 +36,23 @@ Vec2.prototype.scale = function(factor) {
    return new Vec2(this.x * factor, this.y * factor);
 }
 
-// Adds |v| Vec2 to |this| Vec2.
+// Adds |v| Vec2 to |this| Vec2 and returns |this|.
 Vec2.prototype.mutableAdd = function(v) {
    this.x += v.x;
    this.y += v.y;
+   return this;
 }
 
-// Subtracts |v| Vec2 from |this| Vec2.
+// Subtracts |v| Vec2 from |this| Vec2 and returns |this|.
 Vec2.prototype.mutableSub = function(v) {
    this.x -= v.x;
    this.y -= v.y;
+   return this;
 }
 
-// Scales |this| Vec2 by |factor| Number.
+// Scales |this| Vec2 by |factor| Number and returns |this|.
 Vec2.prototype.mustableScale = function(factor) {
    this.x *= factor;
    this.y *= factor;
+   return this;
 }
