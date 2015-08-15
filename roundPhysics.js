@@ -26,21 +26,21 @@ RoundPhysics.prototype.addParticle = function(particle) {
    this.particles.push(particle);
 }
 
-// Applies a gravitational force to all Particles in |this| RoundPhysics
+// Applies a gravitational impulse to all Particles in |this| RoundPhysics
 // context.
 RoundPhysics.prototype.applyGravity = function() {
    if (this.gravity) {
       this.particles.forEach(function(particle) {
-         particle.applyForce(this.gravity.scale(particle.mass * this.dt));
+         particle.applyImpulse(this.gravity.scale(particle.mass * this.dt));
       }, this);
    }
 }
 
-// Applies a wind force to all Particles in |this| RoundPhysics context.
+// Applies a wind impulse to all Particles in |this| RoundPhysics context.
 RoundPhysics.prototype.applyWind = function() {
    if (this.wind) {
       this.particles.forEach(function(particle) {
-         particle.applyForce(this.wind.scale(this.dt));
+         particle.applyImpulse(this.wind.scale(this.dt));
       }, this);
    }
 }
@@ -66,7 +66,7 @@ RoundPhysics.prototype.draw = function(bgColor) {
 }
 
 // Function to execute for every frame of |this| RoundPhysics context.
-// Applies a graviational and wind force to all Particles, updates their
+// Applies a graviational and wind impulse to all Particles, updates their
 // positions, and finally draws the Particles.
 RoundPhysics.prototype.frame = function(timestamp) {
    this.dt = this.prev > 0 ? (timestamp - this.prev) / 1000 : 0;

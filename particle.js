@@ -24,10 +24,10 @@ Particle.prototype.density = function() {
    return this.mass / this.area();
 }
 
-// Adds the acceleration Vec2, |force| Vec2 divided by |this.mass| Number,
+// Adds the velocity Vec2, |impulse| Vec2 divided by |this.mass| Number,
 // to |this.vel| Vec2.
-Particle.prototype.applyForce = function(force) {
-   this.vel.mutableAdd(force.scale(1 / this.mass));
+Particle.prototype.applyImpulse = function(impulse) {
+   this.vel.mutableAdd(impulse.scale(1 / this.mass));
 }
 
 // Adds |this.vel| velocity Vec2 scaled by |dt| Number to |this.pos| Vec2.
