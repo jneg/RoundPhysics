@@ -7,14 +7,16 @@
  * @constructor
  * @param {HTMLCanvasElement} canvas - the canvas to animate and register
  * mouse events on
+ * @param {String} bgColor - the background color for the canvas
  * @param {Vec2} gravity - the gravity vector to apply to the environment
  * @param {Vec2} wind - the wind velocity vector to apply to the environment
  * @return {RoundPhysics} |this| RoundPhysics context
  */
-function RoundPhysics(canvas, gravity, wind) {
+function RoundPhysics(canvas, bgColor, gravity, wind) {
    this.canvas = canvas;
    this.viewport = this.canvas.getBoundingClientRect();
    this.context = this.canvas.getContext('2d');
+   this.bgColor = bgColor;
    this.gravity = gravity;
    this.wind = wind;
    this.dragFriction = 0.02;
@@ -108,7 +110,7 @@ RoundPhysics.prototype.addParticle = function(particle) {
  *
  * @return {RoundPhysics} |this| RoundPhysics context
  */
-RoundPhysics.prototype.boundsChecking = function() {
+RoundPhysics.prototype.boundsDetection = function() {
    this.particles.forEach(function(particle) {
       if (particle.pos.y + particle.radius > this.canvas.height) {
          particle.pos.y = this.canvas.height - particle.radius;
@@ -210,7 +212,7 @@ RoundPhysics.prototype.draw = function(bgColor) {
 }
 
 /**
- * Executes upon every frame. Does bounds checking, environmental forces,
+ * Executes upon every frame. Does bounds detection, environmental forces,
  * mouse forces, position updating, and finally drawing.
  *
  * @return {RoundPhysics} |this| RoundPhysics context
@@ -219,12 +221,12 @@ RoundPhysics.prototype.frame = function(timestamp) {
    this.dt = this.prev > 0 ? (timestamp - this.prev) / 1000 : 0;
    this.prev = timestamp;
 
-   this.boundsChecking()
+   this.boundsDetection()
     .applyGravity()
     .applyWind()
     .applyMouse()
     .updatePositions()
-    .draw('#111111');
+    .draw(this.bgColor);
 
    window.requestAnimFrame(this.frame.bind(this));
 
