@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Round Physics</title>
+
+    <link rel="stylesheet" href="style/style.css">
+  </head>
+
+  <body onload="init()">
+    <canvas id="cvs" width="1200" height="800"></canvas>
+  </body>
+
+  <script src="src/vec2.js"></script>
+  <script src="src/particle.js"></script>
+  <script src="src/roundPhysics.js"></script>
+  <script>
+  function init() {
+    var rp = new RoundPhysics(document.getElementById('cvs'), new Vec2(0, 1300),
+     new Vec2(-500, 0));
+
+    rp.addParticle(new Particle(3, 30, 'blue', 200, 100));
+    rp.addParticle(new Particle(8, 50, 'green', 400, 100));
+    rp.addParticle(new Particle(20, 80, 'red', 600, 100));
+    rp.addParticle(new Particle(1, 10, 'yellow', 800, 100));
+    rp.addParticle(new Particle(4, 40, 'orange', 300, 200));
+    rp.addParticle(new Particle(0.5, 8, 'purple', 500, 200));
+    rp.addParticle(new Particle(2.5, 20, 'magenta', 700, 200));
+    rp.addParticle(new Particle(1.5, 10, 'cyan', 900, 200));
+
+    rp.start();
+  }
+  </script>
+</html>
