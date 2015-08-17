@@ -4,6 +4,7 @@
  * The context takes two vectors: gravity and wind for environmental
  * impulses on the particles.
  *
+ * @constructor
  * @param {HTMLCanvasElement} canvas - the canvas to animate and register
  * mouse events on
  * @param {Vec2} gravity - the gravity vector to apply to the environment

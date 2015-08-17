@@ -2,6 +2,7 @@
  * Constructs a Vec2 instance with an |x| and |y| property. Vec2 represents
  * a 2 dimensional vector.
  *
+ * @constructor
  * @param {Number} x - the x property of the vector
  * @param {Number} y - the y property of the vector
  * @return {Vec2} |this| Vec2 instance
