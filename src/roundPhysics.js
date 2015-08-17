@@ -29,47 +29,84 @@ function RoundPhysics(canvas, bgColor, gravity, wind) {
 
    this.setAnimFrame();
 
-   this.canvas.addEventListener('contextmenu', function(e) {
-      e.preventDefault();
-   });
+   this.canvas.addEventListener('contextmenu', this.preventDefault.bind(this));
+   this.canvas.addEventListener('mousemove', this.setMouse.bind(this));
+   this.canvas.addEventListener('mousedown', this.selectParticle.bind(this));
+   this.canvas.addEventListener('mouseup', this.deselectParticle.bind(this));
+   this.canvas.addEventListener('mouseleave', this.deselectParticle.bind(this));
+}
 
-   this.canvas.addEventListener('mousemove', (function(e) {
-      this.mouse.mutableSet(e.clientX - this.viewport.left,
-       e.clientY - this.viewport.top);
+/**
+ * Prevents default behavior of the event that occured.
+ *
+ * @param {Event} e - the event
+ * @return {RoundPhysics} |this| RoundPhysics context
+ */
+RoundPhysics.prototype.preventDefault = function(e) {
+   e.preventDefault();
+
+   return this;
+}
+
+/**
+ * Sets the mouse vector to the coordinates of the mouse on the canvas.
+ *
+ * @param {Event} e - the event
+ * @return {RoundPhysics} |this| RoundPhysics context
+ */
+RoundPhysics.prototype.setMouse = function(e) {
+   this.mouse.mutableSet(e.clientX - this.viewport.left,
+    e.clientY - this.viewport.top);
+
+   return this;
+}
+
+/**
+ * Selects the particle by first sorting the particles by their distance
+ * to the mouse, and then looping through the particles in ascending
+ * distance order to select the first particle that contains the mouse in it.
+ * If no particle contains the mouse position, no particle is selected.
+ *
+ * @param {Event} e - the event
+ * @return {RoundPhysics} |this| RoundPhysics context
+ */
+RoundPhysics.prototype.selectParticle = function(e) {
+   this.particles = this.particles.sort((function(ptcl1, ptcl2) {
+      var ptcl1Dist = ptcl1.pos.sub(this.mouse).length();
+      var ptcl2Dist = ptcl2.pos.sub(this.mouse).length();
+
+      if (ptcl1Dist < ptcl2Dist) {
+         return -1;
+      }
+
+      if (ptcl1Dist > ptcl2Dist) {
+         return 1;
+      }
+
+      return 0;
    }).bind(this));
 
-   this.canvas.addEventListener('mousedown', (function(e) {
-      this.particles = this.particles.sort((function(ptcl1, ptcl2) {
-         var ptcl1Dist = ptcl1.pos.sub(this.mouse).length();
-         var ptcl2Dist = ptcl2.pos.sub(this.mouse).length();
+   this.particles.some(function(particle) {
+      if (particle.contains(this.mouse)) {
+         this.selParticle = particle;
 
-         if (ptcl1Dist < ptcl2Dist) {
-            return -1;
-         }
+         return true;
+      }
+   }, this);
 
-         if (ptcl1Dist > ptcl2Dist) {
-            return 1;
-         }
+   return this;
+}
 
-         return 0;
-      }).bind(this));
+/**
+ * Sets the selected particle to null in |this| RoundPhysics context.
+ *
+ * @param {Event} e - the event
+ * @return {RoundPhysics} |this| RoundPhysics context
+ */
+RoundPhysics.prototype.deselectParticle = function(e) {
+   this.selParticle = null;
 
-      this.particles.some(function(particle) {
-         if (particle.contains(this.mouse)) {
-            this.selParticle = particle;
-
-            return true;
-         }
-      }, this);
-   }).bind(this));
-
-   this.canvas.addEventListener('mouseup', (function(e) {
-      this.selParticle = null;
-   }).bind(this));
-
-   this.canvas.addEventListener('mouseleave', (function(e) {
-      this.selParticle = null;
-   }).bind(this));
+   return this;
 }
 
 /**
@@ -99,11 +136,11 @@ RoundPhysics.prototype.setAnimFrame = function() {
  * @return {RoundPhysics} |this| RoundPhysics context
  */
 RoundPhysics.prototype.changeCanvas = function(canvas) {
-   this.canvas.removeEventListener('contextmenu');
-   this.canvas.removeEventListener('mousemove');
-   this.canvas.removeEventListener('mousedown');
-   this.canvas.removeEventListener('mouseup');
-   this.canvas.removeEventListener('mouseleave');
+   this.canvas.removeEventListener('contextmenu', this.defaultBehavior);
+   this.canvas.removeEventListener('mousemove', this.setMouse);
+   this.canvas.removeEventListener('mousedown', this.selectParticle);
+   this.canvas.removeEventListener('mouseup', this.deselectParticle);
+   this.canvas.removeEventListener('mouseleave', this.deselectParticle);
 
    this.canvas = canvas;
    this.viewport = this.canvas.getBoundingClientRect();
@@ -283,7 +320,7 @@ RoundPhysics.prototype.applyWind = function() {
  * @return {RoundPhysics} |this| RoundPhysics context
  */
 RoundPhysics.prototype.applyMouse = function() {
-   if (this.selParticle !== null) {
+   if (this.selParticle) {
       var rEdge = this.mouse.x > this.canvas.width - this.selParticle.radius;
       var lEdge = this.mouse.x < this.selParticle.radius;
       var bEdge = this.mouse.y > this.canvas.height - this.selParticle.radius;
