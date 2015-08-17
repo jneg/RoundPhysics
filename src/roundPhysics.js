@@ -24,7 +24,7 @@ function RoundPhysics(canvas, bgColor, gravity, wind) {
    this.dt = 0;
    this.prev = 0;
    this.mouse = new Vec2(0, 0);
-   this.grabbedParticle = null;
+   this.selParticle = null;
    this.particles = [];
 
    this.setAnimFrame();
@@ -34,7 +34,7 @@ function RoundPhysics(canvas, bgColor, gravity, wind) {
    });
 
    this.canvas.addEventListener('mousemove', (function(e) {
-      this.mouse = new Vec2(e.clientX - this.viewport.left,
+      this.mouse.mutableSet(e.clientX - this.viewport.left,
        e.clientY - this.viewport.top);
    }).bind(this));
 
@@ -56,18 +56,18 @@ function RoundPhysics(canvas, bgColor, gravity, wind) {
 
       this.particles.some(function(particle) {
          if (particle.contains(this.mouse)) {
-            this.grabbedParticle = particle;
+            this.selParticle = particle;
             return true;
          }
       }, this);
    }).bind(this));
 
    this.canvas.addEventListener('mouseup', (function(e) {
-      this.grabbedParticle = null;
+      this.selParticle = null;
    }).bind(this));
 
    this.canvas.addEventListener('mouseleave', (function(e) {
-      this.grabbedParticle = null;
+      this.selParticle = null;
    }).bind(this));
 }
 
@@ -92,6 +92,62 @@ RoundPhysics.prototype.setAnimFrame = function() {
 }
 
 /**
+ * Changes the |canvas| of |this| RoundPhysics context.
+ *
+ * @param {HTMLCanvasElement} canvas - the canvas to attach to
+ * @return {RoundPhysics} |this| RoundPhysics context
+ */
+RoundPhysics.prototype.changeCanvas = function(canvas) {
+   this.canvas.removeEventListener('contextmenu');
+   this.canvas.removeEventListener('mousemove');
+   this.canvas.removeEventListener('mousedown');
+   this.canvas.removeEventListener('mouseup');
+   this.canvas.removeEventListener('mouseleave');
+
+   this.canvas = canvas;
+   this.viewport = this.canvas.getBoundingClientRect();
+   this.context = this.canvas.getContext('2d');
+
+   return this;
+}
+
+/**
+ * Changes the background color on the canvas of |this| RoundPhysics context.
+ *
+ * @param {String} bgColor - the background color
+ * @return {RoundPhysics} |this| RoundPhysics context
+ */
+RoundPhysics.prototype.changeBgColor = function(bgColor) {
+   this.bgColor = bgColor;
+
+   return this;
+}
+
+/**
+ * Changes the gravity vector of |this| RoundPhysics context.
+ *
+ * @param {Vec2} gravity - the new gravity to apply to the environment
+ * @return {RoundPhysics} |this| RoundPhysics context
+ */
+RoundPhysics.prototype.changeGravity = function(gravity) {
+   this.gravity = gravity;
+
+   return this;
+}
+
+/**
+ * Changes the wind vector of |this| RoundPhysics context.
+ *
+ * @param {Vec2} wind - the new wind to apply to the environment
+ * @return {RoundPhysics} |this| RoundPhysics context
+ */
+RoundPhysics.prototype.changeWind = function(wind) {
+   this.wind = wind;
+
+   return this;
+}
+
+/**
  * Adds |particle| to |this| RoundPhysics context. This creates a new
  * particle on the canvas for the context to interact with.
  *
@@ -105,6 +161,39 @@ RoundPhysics.prototype.addParticle = function(particle) {
 }
 
 /**
+ * Starts animating the canvas.
+ *
+ * @return {RoundPhysics} |this| RoundPhysics context
+ */
+RoundPhysics.prototype.start = function() {
+   window.requestAnimFrame(this.frame.bind(this));
+
+   return this;
+}
+
+/**
+ * Executes upon every frame. Does bounds detection, environmental forces,
+ * mouse forces, position updating, and finally drawing.
+ *
+ * @return {RoundPhysics} |this| RoundPhysics context
+ */
+RoundPhysics.prototype.frame = function(timestamp) {
+   this.dt = this.prev > 0 ? (timestamp - this.prev) / 1000 : 0;
+   this.prev = timestamp;
+
+   this.boundsDetection()
+    .applyGravity()
+    .applyWind()
+    .applyMouse()
+    .updatePositions()
+    .draw(this.bgColor);
+
+   window.requestAnimFrame(this.frame.bind(this));
+
+   return this;
+}
+
+/**
  * Bounces all particles out of bounds back into bounds by changing
  * their velocities and positions.
  *
@@ -112,11 +201,6 @@ RoundPhysics.prototype.addParticle = function(particle) {
  */
 RoundPhysics.prototype.boundsDetection = function() {
    this.particles.forEach(function(particle) {
-      if (particle.pos.y + particle.radius > this.canvas.height) {
-         particle.pos.y = this.canvas.height - particle.radius;
-         particle.vel.y *= -1 * Math.sqrt(this.energyRetained);
-      }
-
       if (particle.pos.x + particle.radius > this.canvas.width) {
          particle.pos.x = this.canvas.width - particle.radius;
          particle.vel.x *= -1 * Math.sqrt(this.energyRetained);
@@ -125,6 +209,11 @@ RoundPhysics.prototype.boundsDetection = function() {
       if (particle.pos.x - particle.radius < 0) {
          particle.pos.x = particle.radius;
          particle.vel.x *= -1 * Math.sqrt(this.energyRetained);
+      }
+
+      if (particle.pos.y + particle.radius > this.canvas.height) {
+         particle.pos.y = this.canvas.height - particle.radius;
+         particle.vel.y *= -1 * Math.sqrt(this.energyRetained);
       }
    }, this);
 
@@ -165,14 +254,38 @@ RoundPhysics.prototype.applyWind = function() {
 /**
  * Checks if there is a particle selected by the mouse, and if so
  * change that particle's position to that of the mouse to provide
- * a dragging effect.
+ * a dragging effect. If the mouse goes out of bounds, move the
+ * selected particle to the very edge, but no more.
  *
  * @return {RoundPhysics} |this| RoundPhysics context
  */
 RoundPhysics.prototype.applyMouse = function() {
-   if (this.grabbedParticle !== null) {
-      this.grabbedParticle.pos = new Vec2(this.mouse.x, this.mouse.y);
-      this.grabbedParticle.vel = new Vec2(0, 0);
+   if (this.selParticle !== null) {
+      var rEdge = this.mouse.x > this.canvas.width - this.selParticle.radius;
+      var lEdge = this.mouse.x < this.selParticle.radius;
+      var bEdge = this.mouse.y > this.canvas.height - this.selParticle.radius;
+
+      if (bEdge && lEdge) {
+         this.selParticle.pos.mutableSet(this.selParticle.radius,
+          this.canvas.height - this.selParticle.radius);
+      } else if (bEdge && rEdge) {
+         this.selParticle.pos.mutableSet(this.canvas.width -
+          this.selParticle.radius, this.canvas.height -
+          this.selParticle.radius);
+      } else if (rEdge) {
+         this.selParticle.pos.mutableSet(this.canvas.width -
+          this.selParticle.radius, this.mouse.y);
+      } else if (lEdge) {
+         this.selParticle.pos.mutableSet(this.selParticle.radius,
+          this.mouse.y);
+      } else if (bEdge) {
+         this.selParticle.pos.mutableSet(this.mouse.x,
+          this.canvas.height - this.selParticle.radius);
+      } else {
+         this.selParticle.pos.mutableSet(this.mouse.x, this.mouse.y);
+      }
+
+      this.selParticle.vel.mutableSet(0, 0);
    }
 
    return this;
@@ -207,39 +320,6 @@ RoundPhysics.prototype.draw = function(bgColor) {
    this.particles.forEach(function(particle) {
       particle.draw(this.context);
    }, this);
-
-   return this;
-}
-
-/**
- * Executes upon every frame. Does bounds detection, environmental forces,
- * mouse forces, position updating, and finally drawing.
- *
- * @return {RoundPhysics} |this| RoundPhysics context
- */
-RoundPhysics.prototype.frame = function(timestamp) {
-   this.dt = this.prev > 0 ? (timestamp - this.prev) / 1000 : 0;
-   this.prev = timestamp;
-
-   this.boundsDetection()
-    .applyGravity()
-    .applyWind()
-    .applyMouse()
-    .updatePositions()
-    .draw(this.bgColor);
-
-   window.requestAnimFrame(this.frame.bind(this));
-
-   return this;
-}
-
-/**
- * Starts animating the canvas.
- *
- * @return {RoundPhysics} |this| RoundPhysics context
- */
-RoundPhysics.prototype.start = function() {
-   window.requestAnimFrame(this.frame.bind(this));
 
    return this;
 }

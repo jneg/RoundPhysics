@@ -70,6 +70,20 @@ Vec2.prototype.scale = function(factor) {
 }
 
 /**
+ * Sets |this| x and y properties to |x| and |y|.
+ *
+ * @param {Number} x - the x property
+ * @param {Number} y - the y property
+ * @return {Vec2} |this| vector
+ */
+Vec2.prototype.mutableSet = function(x, y) {
+   this.x = x;
+   this.y = y;
+
+   return this;
+}
+
+/**
  * Adds |v| to |this| and returns |this|.
  * 
  * @param {Vec2} v - the vector to add to |this|
