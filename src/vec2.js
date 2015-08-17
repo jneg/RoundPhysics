@@ -13,6 +13,17 @@ function Vec2(x, y) {
 }
 
 /**
+ * Returns true if |this| equals |v|, otherwise false.
+ * Two vectors are equal if their x and y properties are equal.
+ *
+ * @param {Vec2} v - the vector to compare with |this|
+ * @return {Boolean} true if |this| equals |v|, otherwise false
+ */
+Vec2.prototype.equals = function(v) {
+   return this.x === v.x && this.y === v.y;
+}
+
+/**
  * Returns the length of |this| vector.
  * 
  * @return {Number} length of |this| vector

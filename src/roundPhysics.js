@@ -57,6 +57,7 @@ function RoundPhysics(canvas, bgColor, gravity, wind) {
       this.particles.some(function(particle) {
          if (particle.contains(this.mouse)) {
             this.selParticle = particle;
+
             return true;
          }
       }, this);
@@ -155,7 +156,29 @@ RoundPhysics.prototype.changeWind = function(wind) {
  * @return {RoundPhysics} |this| RoundPhysics context
  */
 RoundPhysics.prototype.addParticle = function(particle) {
-   this.particles.push(particle);
+   this.particles.push(new Particle(particle.mass, particle.radius,
+    particle.color, particle.pos.x, particle.pos.y));
+
+   return this;
+}
+
+/**
+ * Removes |remParticle| from |this| RoundPhysics context. This deletes
+ * only one particle: the first particle in particles equal to |remParticle|.
+ * If |remParticle| does not exist in particles, this method does nothing.
+ * Particles are equal if they have the same mass, radius, and color.
+ *
+ * @param {Particle} remParticle - the equivalent particle to remove
+ * @return {RoundPhysics} |this| RoundPhysics context
+ */
+RoundPhysics.prototype.removeParticle = function(remParticle) {
+   this.particles.some(function(particle, index) {
+      if (particle.equals(remParticle)) {
+         this.particles.splice(index, 1);
+
+         return true;
+      }
+   }, this);
 
    return this;
 }

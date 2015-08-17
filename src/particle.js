@@ -18,6 +18,18 @@ function Particle(mass, radius, color, x, y) {
 }
 
 /**
+ * Return true if |this| equals |ptcl|, otherwise false.
+ * Two particles are equal if their masses, radii, and colors are equal.
+ *
+ * @param {Particle} ptcl - the particle to compare with |this|
+ * @return {Boolean} true if |this| equals |ptcl|, otherwise false
+ */
+Particle.prototype.equals = function(ptcl) {
+   return this.mass === ptcl.mass && this.radius === ptcl.radius &&
+    this.color === ptcl.color;
+}
+
+/**
  * Returns the diameter of |this| Particle.
  *
  * @return {Number} the diameter of |this| Particle
