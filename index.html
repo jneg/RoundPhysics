@@ -18,16 +18,15 @@
      var rp = new RoundPhysics(document.getElementById('cvs'), '#111111',
       new Vec2(0, 2500), new Vec2(-300, 0));
 
-     rp.addParticle(new Particle(3, 30, 'blue', 200, 100));
-     rp.addParticle(new Particle(8, 50, 'green', 400, 100));
-     rp.addParticle(new Particle(20, 80, 'red', 600, 100));
-     rp.addParticle(new Particle(1, 10, 'yellow', 800, 100));
-     rp.addParticle(new Particle(4, 40, 'orange', 300, 200));
-     rp.addParticle(new Particle(0.5, 8, 'purple', 500, 200));
-     rp.addParticle(new Particle(2.5, 20, 'magenta', 700, 200));
-     rp.addParticle(new Particle(1.5, 10, 'cyan', 900, 200));
-
-     rp.start();
+     rp.addParticle(new Particle(3, 30, 'blue', 200, 100))
+      .addParticle(new Particle(8, 50, 'green', 400, 100))
+      .addParticle(new Particle(20, 80, 'red', 600, 100))
+      .addParticle(new Particle(1, 10, 'yellow', 800, 100))
+      .addParticle(new Particle(4, 40, 'orange', 300, 200))
+      .addParticle(new Particle(0.5, 8, 'purple', 500, 200))
+      .addParticle(new Particle(2.5, 20, 'magenta', 700, 200))
+      .addParticle(new Particle(1.5, 10, 'cyan', 900, 200))
+      .start();
   }
   </script>
 </html>

@@ -14,7 +14,6 @@
  */
 function RoundPhysics(canvas, bgColor, gravity, wind) {
    this.canvas = canvas;
-   this.viewport = this.canvas.getBoundingClientRect();
    this.context = this.canvas.getContext('2d');
    this.bgColor = bgColor;
    this.gravity = gravity;
@@ -22,7 +21,7 @@ function RoundPhysics(canvas, bgColor, gravity, wind) {
    this.dragFriction = 0.02;
    this.energyRetained = 0.6;
    this.dt = 0;
-   this.prev = 0;
+   this.progress = 0;
    this.mouse = new Vec2(0, 0);
    this.selParticle = null;
    this.particles = [];
@@ -55,8 +54,10 @@ RoundPhysics.prototype.preventDefault = function(e) {
  * @return {RoundPhysics} |this| RoundPhysics context
  */
 RoundPhysics.prototype.setMouse = function(e) {
-   this.mouse.mutableSet(e.clientX - this.viewport.left,
-    e.clientY - this.viewport.top);
+   var viewport = this.canvas.getBoundingClientRect();
+
+   this.mouse.mutableSet(e.clientX - viewport.left,
+    e.clientY - viewport.top);
 
    return this;
 }
@@ -143,7 +144,6 @@ RoundPhysics.prototype.changeCanvas = function(canvas) {
    this.canvas.removeEventListener('mouseleave', this.deselectParticle);
 
    this.canvas = canvas;
-   this.viewport = this.canvas.getBoundingClientRect();
    this.context = this.canvas.getContext('2d');
 
    return this;
@@ -238,8 +238,8 @@ RoundPhysics.prototype.start = function() {
  * @return {RoundPhysics} |this| RoundPhysics context
  */
 RoundPhysics.prototype.frame = function(timestamp) {
-   this.dt = this.prev > 0 ? (timestamp - this.prev) / 1000 : 0;
-   this.prev = timestamp;
+   this.dt = this.progress > 0 ? (timestamp - this.progress) / 1000 : 0;
+   this.progress = timestamp;
 
    this.boundsDetection()
     .applyGravity()
@@ -321,28 +321,22 @@ RoundPhysics.prototype.applyWind = function() {
  */
 RoundPhysics.prototype.applyMouse = function() {
    if (this.selParticle) {
-      var rEdge = this.mouse.x > this.canvas.width - this.selParticle.radius;
-      var lEdge = this.mouse.x < this.selParticle.radius;
-      var bEdge = this.mouse.y > this.canvas.height - this.selParticle.radius;
-
-      if (bEdge && lEdge) {
-         this.selParticle.pos.mutableSet(this.selParticle.radius,
-          this.canvas.height - this.selParticle.radius);
-      } else if (bEdge && rEdge) {
-         this.selParticle.pos.mutableSet(this.canvas.width -
-          this.selParticle.radius, this.canvas.height -
-          this.selParticle.radius);
-      } else if (rEdge) {
-         this.selParticle.pos.mutableSet(this.canvas.width -
-          this.selParticle.radius, this.mouse.y);
-      } else if (lEdge) {
-         this.selParticle.pos.mutableSet(this.selParticle.radius,
-          this.mouse.y);
-      } else if (bEdge) {
-         this.selParticle.pos.mutableSet(this.mouse.x,
-          this.canvas.height - this.selParticle.radius);
+      if (this.mouse.x < this.selParticle.radius) {
+         this.selParticle.pos.x = this.selParticle.radius;
+      } else if (this.mouse.x > this.canvas.width - this.selParticle.radius) {
+         this.selParticle.pos.x = this.canvas.width -
+          this.selParticle.radius;
       } else {
-         this.selParticle.pos.mutableSet(this.mouse.x, this.mouse.y);
+         this.selParticle.pos.x = this.mouse.x;
+      }
+
+      if (this.mouse.y < this.selParticle.radius) {
+         this.selParticle.pos.y = this.selParticle.radius;
+      } else if (this.mouse.y > this.canvas.height - this.selParticle.radius) {
+         this.selParticle.pos.y = this.canvas.height -
+          this.selParticle.radius;
+      } else {
+         this.selParticle.pos.y = this.mouse.y
       }
 
       this.selParticle.vel.mutableSet(0, 0);
