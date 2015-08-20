@@ -16,69 +16,20 @@ function Particle(mass, radius, color, x, y) {
       this.mass = rand.number(0.2, 4);
       this.radius = Math.floor(this.mass * 5);
       this.color = rand.color();
-      this.posPrev = new Vec2(Math.floor(rand.number(0, window.innerWidth)),
+      this.pos = new Vec2(Math.floor(rand.number(0, window.innerWidth)),
        Math.floor(rand.number(0, window.innerHeight)));
-      this.pos = new Vec2(this.posPrev.x, this.posPrev.y);
    } else {
       this.mass = mass;
       this.radius = radius;
       this.color = color;
-      this.posPrev = new Vec2(x, y);
       this.pos = new Vec2(x, y);
    }
 
-   this.accPrev = new Vec2(0, 0);
+   this.vel = new Vec2(0, 0);
    this.acc = new Vec2(0, 0);
    this.behaviors = [];
 }
 
-/**
- * Adds |behavior| to |this| Particle.
- *
- * @param {Behavior} behavior - the behavior to add
- * @return {Particle} |this| Particle instance
- */
-Particle.prototype.addBehavior = function(behavior) {
-   this.behaviors.push(behavior);
-
-   return this;
-}
-
-/**
- * Deletes |behavior| from |this| Particle.
- *
- * @param {Behavior} behavior - the behavior to delete
- * @return {Particle} |this| Particle instance
- */
-Particle.prototype.delBehavior = function(behavior) {
-
-   return this;
-}
-
-/**
- * Applies all behaviors of |this| Particle.
- *
- * @return {Particle} |this| Particle instance
- */
-Particle.prototype.applyBehaviors = function() {
-   this.behaviors.forEach(function(behavior) {
-      behavior.apply(this);
-   }, this);
-
-   return this;
-}
-
-/**
- * Returns the string representation of |this| Particle.
- *
- * @return {String} the string representation of |this| Particle
- */
-Particle.prototype.toString = function() {
-   return '{Particle} mass: ' + this.mass + ', radius: ' + this.radius +
-    ', color: ' + this.color + ', posPrev: ' + this.posPrev + ', pos: ' +
-    this.pos + ', accPrev: ' + this.accPrev + ', acc: ' + this.acc +
-    ', behaviors: ' + this.behaviors.toString();
-}
 
 /**
  * Returns the diameter of |this| Particle.
@@ -117,8 +68,19 @@ Particle.prototype.density = function() {
 }
 
 /**
+ * Returns the string representation of |this| Particle.
+ *
+ * @return {String} the string representation of |this| Particle
+ */
+Particle.prototype.toString = function() {
+   return '{Particle} mass: ' + this.mass + ', radius: ' + this.radius
+    + ', color: ' + this.color + ', pos: ' + this.pos + ', vel: ' + this.vel
+    + ', acc: ' + this.acc + ', behaviors: ' + this.behaviors.toString();
+}
+
+/**
  * Return true if |this| equals |oParticle|, otherwise false.
- * Two particles are equal if their masses, radii, and colors are equal.
+ * Two particles are equal if their masses, radii, and colors are the same.
  *
  * @param {Particle} oParticle - the other particle to compare with |this|
  * @return {Boolean} true if |this| equals |oParticle|, otherwise false
@@ -161,6 +123,43 @@ Particle.prototype.draw = function(context) {
    context.arc(this.pos.x, this.pos.y, this.radius, 0, 2 * Math.PI);
    context.fillStyle = this.color;
    context.fill();
+
+   return this;
+}
+
+/**
+ * Adds |behavior| to |this| Particle.
+ *
+ * @param {Behavior} behavior - the behavior to add
+ * @return {Particle} |this| Particle instance
+ */
+Particle.prototype.addBehavior = function(behavior) {
+   this.behaviors.push(behavior);
+
+   return this;
+}
+
+/**
+ * Deletes |behavior| from |this| Particle.
+ *
+ * @param {Behavior} behavior - the behavior to delete
+ * @return {Particle} |this| Particle instance
+ */
+Particle.prototype.delBehavior = function(behavior) {
+   
+
+   return this;
+}
+
+/**
+ * Applies all of |this| Particle's behaviors to itself.
+ *
+ * @return {Particle} |this| Particle instance
+ */
+Particle.prototype.applyBehaviors = function() {
+   this.behaviors.forEach(function(behavior) {
+      behavior.apply(this);
+   }, this);
 
    return this;
 }

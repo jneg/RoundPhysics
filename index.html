@@ -11,7 +11,8 @@
   <script src="src/util/random.js"></script>
   <script src="src/body/particle.js"></script>
   <script src="src/behavior/wander.js"></script>
-  <script src="src/integrator/tcv.js"></script>
+  <script src="src/behavior/edgeWrap.js"></script>
+  <script src="src/integrator/improvedEuler.js"></script>
   <script src="src/handler/canvasHandler.js"></script>
   <script src="src/engine/roundPhysics.js"></script>
   <script>
@@ -19,7 +20,10 @@
      var rp = new RoundPhysics('#111111');
 
      for (var p = 0; p < 50; ++p) {
-        rp.addBody(new Particle().addBehavior(new Wander(0.5, 10000)));
+        rp
+         .addBody(new Particle()
+         .addBehavior(new Wander(0.5, 10000))
+         .addBehavior(new EdgeWrap()));
      }
 
      rp.start();

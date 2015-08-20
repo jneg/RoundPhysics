@@ -1,24 +1,24 @@
 /**
  * Creates and returns a Wander instance.
  * A Wander instance is a behavior which makes its applied
- * body roam with constant velocity in random rotation based
- * on the degree of |insanity| and the force of |strength|.
+ * body roam with constant velocity in random direction based
+ * on the degree of |insanity| and the |speed|.
  *
  * @constructor
  * @param {Number} insanity - the degree of rotation between (0, 2 PI)
- * @param {Number} strength - the force of wander
+ * @param {Number} speed - the speed of wander
  * @return {Wander} |this| Wander instance
  */
-function Wander(insanity, strength) {
+function Wander(insanity, speed) {
    this.insanity = insanity
-   this.strength = strength;
+   this.speed = speed;
    this.angle = Math.random() * 2 * Math.PI;
 }
 
 /**
  * Apply |this| Wander behavior onto |body|.
  *
- * @param {Body} body - the body to apply behavior to
+ * @param {Body} body - the body to apply Wander to
  * @return {Wander} |this| Wander instance
  */
 Wander.prototype.apply = function(body) {
@@ -26,16 +26,15 @@ Wander.prototype.apply = function(body) {
    this.angle += (Math.random() - 0.5) * this.insanity;
    var unitNew = new Vec2(1, 0).mutableAngle(this.angle);
 
-   body.applyForce(unitPrev.scale(-1 * this.strength));
-   body.applyForce(unitNew.scale(this.strength));
+   body.applyForce(unitPrev.scale(-1 * this.speed));
+   body.applyForce(unitNew.scale(this.speed));
 }
 
 /**
- * Returns the string representation of |this|.
+ * Returns the string representation of |this| Wander instance.
  *
- * @return {String} string representation of |this|
+ * @return {String} string representation of |this| Wander instance
  */
 Wander.prototype.toString = function() {
-   return '{Wander} insanity: ' + this.insanity + ', strength: '
-    + this.strength;
+   return '{Wander} insanity: ' + this.insanity + ', speed: ' + this.speed;
 }

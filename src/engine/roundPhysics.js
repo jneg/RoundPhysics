@@ -1,6 +1,8 @@
 /**
  * Constructs a RoundPhysics context instance. This context handles
- * creation of bodies and behaviors, and frame logic.
+ * creation of bodies, the integrator, and the canvasHandler.
+ * In addition, it does frame logic to coordinate all the modules
+ * of the library.
  *
  * @constructor
  * @param {String} bgColor - the background color for the canvas
@@ -8,10 +10,9 @@
  */
 function RoundPhysics(bgColor) {
    this.bodies = [];
-   this.integrator = new Tcv();
+   this.integrator = new ImprovedEuler();
    this.canvasHandler = new CanvasHandler(bgColor);
    this.progress = 0;
-   this.dtPrev = 0;
    this.dt = 0;
 
 
@@ -90,7 +91,6 @@ RoundPhysics.prototype.start = function() {
  * @return {RoundPhysics} |this| RoundPhysics context
  */
 RoundPhysics.prototype.frame = function(timestamp) {
-   this.dtPrev = this.dt;
    this.dt = (timestamp - this.progress) / 1000;
    this.progress = timestamp;
 
@@ -98,7 +98,7 @@ RoundPhysics.prototype.frame = function(timestamp) {
       body.applyBehaviors();
    }, this);
 
-   this.integrator.integrate(this.bodies, this.dtPrev, this.dt);
+   this.integrator.integrate(this.bodies, this.dt);
    this.canvasHandler.draw(this.bodies);
 
    window.requestAnimFrame(this.frame.bind(this));
