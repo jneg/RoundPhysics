@@ -10,23 +10,74 @@
  * @return {Particle} |this| Particle instance
  */
 function Particle(mass, radius, color, x, y) {
-   this.mass = mass;
-   this.radius = radius;
-   this.color = color;
-   this.pos = new Vec2(x, y);
-   this.vel = new Vec2(0, 0);
+   if (arguments.length < 5) {
+      var rand = new Random();
+
+      this.mass = rand.number(0.2, 4);
+      this.radius = Math.floor(this.mass * 5);
+      this.color = rand.color();
+      this.posPrev = new Vec2(Math.floor(rand.number(0, window.innerWidth)),
+       Math.floor(rand.number(0, window.innerHeight)));
+      this.pos = new Vec2(this.posPrev.x, this.posPrev.y);
+   } else {
+      this.mass = mass;
+      this.radius = radius;
+      this.color = color;
+      this.posPrev = new Vec2(x, y);
+      this.pos = new Vec2(x, y);
+   }
+
+   this.accPrev = new Vec2(0, 0);
+   this.acc = new Vec2(0, 0);
+   this.behaviors = [];
 }
 
 /**
- * Return true if |this| equals |ptcl|, otherwise false.
- * Two particles are equal if their masses, radii, and colors are equal.
+ * Adds |behavior| to |this| Particle.
  *
- * @param {Particle} ptcl - the particle to compare with |this|
- * @return {Boolean} true if |this| equals |ptcl|, otherwise false
+ * @param {Behavior} behavior - the behavior to add
+ * @return {Particle} |this| Particle instance
  */
-Particle.prototype.equals = function(ptcl) {
-   return this.mass === ptcl.mass && this.radius === ptcl.radius &&
-    this.color === ptcl.color;
+Particle.prototype.addBehavior = function(behavior) {
+   this.behaviors.push(behavior);
+
+   return this;
+}
+
+/**
+ * Deletes |behavior| from |this| Particle.
+ *
+ * @param {Behavior} behavior - the behavior to delete
+ * @return {Particle} |this| Particle instance
+ */
+Particle.prototype.delBehavior = function(behavior) {
+
+   return this;
+}
+
+/**
+ * Applies all behaviors of |this| Particle.
+ *
+ * @return {Particle} |this| Particle instance
+ */
+Particle.prototype.applyBehaviors = function() {
+   this.behaviors.forEach(function(behavior) {
+      behavior.apply(this);
+   }, this);
+
+   return this;
+}
+
+/**
+ * Returns the string representation of |this| Particle.
+ *
+ * @return {String} the string representation of |this| Particle
+ */
+Particle.prototype.toString = function() {
+   return '{Particle} mass: ' + this.mass + ', radius: ' + this.radius +
+    ', color: ' + this.color + ', posPrev: ' + this.posPrev + ', pos: ' +
+    this.pos + ', accPrev: ' + this.accPrev + ', acc: ' + this.acc +
+    ', behaviors: ' + this.behaviors.toString();
 }
 
 /**
@@ -66,52 +117,35 @@ Particle.prototype.density = function() {
 }
 
 /**
+ * Return true if |this| equals |oParticle|, otherwise false.
+ * Two particles are equal if their masses, radii, and colors are equal.
+ *
+ * @param {Particle} oParticle - the other particle to compare with |this|
+ * @return {Boolean} true if |this| equals |oParticle|, otherwise false
+ */
+Particle.prototype.equals = function(oParticle) {
+   return this.mass === oParticle.mass && this.radius === oParticle.radius &&
+    this.color === oParticle.color;
+}
+
+/**
  * Returns true if |point| is within |this| Particle's area, otherwise false.
  *
- * @param {Vec2} point - the point to check
+ * @param {Vec2} point - the point vector to check
  * @return {Boolean} true if |point| is within |this| Particle, otherwise false
  */
 Particle.prototype.contains = function(point) {
-   return this.pos.sub(point).length() < this.radius;
+   return this.pos.sub(point).length() <= this.radius;
 }
 
 /**
- * Returns the drag force of |this| Particle which is the force vector applied
- * by the air on the Particle. This vector is dependent on the |windVel|
- * difference between the two mediums and a |dragFriction| constant.
+ * Applies a force vector to |this| Particle which changes its acceleration.
  *
- * @param {Vec2} windVel - the velocity of the wind
- * @param {Number} dragFriction - the constant to multiply by the drag force
- * @return {Vec2} the drag force vector
- */
-Particle.prototype.dragForce = function(windVel, dragFriction) {
-   var velDiff = windVel.sub(this.vel);
-
-   return velDiff.scale(velDiff.length() * dragFriction * this.density() *
-    this.circumference() / 2);
-}
-
-/**
- * Applies an impulse vector to |this| Particle which changes its velocity.
- *
- * @param {Vec2} impulse - the impulse vector to apply to the Particle
+ * @param {Vec2} force - the force vector to apply to the Particle
  * @return {Particle} |this| Particle instance
  */
-Particle.prototype.applyImpulse = function(impulse) {
-   this.vel.mutableAdd(impulse.scale(1 / this.mass));
-
-   return this;
-}
-
-/**
- * Updates the position of |this| Particle by adding its velocity scaled by
- * |dt| to its position.
- *
- * @param {Number} dt - the change in time between frames
- * @return {Particle} |this| Particle instance
- */
-Particle.prototype.updatePosition = function(dt) {
-   this.pos.mutableAdd(this.vel.scale(dt));
+Particle.prototype.applyForce = function(force) {
+   this.acc.mutableAdd(force.scale(1 / this.mass));
 
    return this;
 }
@@ -119,7 +153,7 @@ Particle.prototype.updatePosition = function(dt) {
 /**
  * Draws |this| Particle onto the |context|.
  *
- * @param {CanvasRenderingContext2D} context - the context to draw to
+ * @param {CanvasRenderingContext2D} context - the context to draw on
  * @return {Particle} |this| Particle instance
  */
 Particle.prototype.draw = function(context) {
@@ -127,6 +161,6 @@ Particle.prototype.draw = function(context) {
    context.arc(this.pos.x, this.pos.y, this.radius, 0, 2 * Math.PI);
    context.fillStyle = this.color;
    context.fill();
-  
+
    return this;
 }

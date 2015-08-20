@@ -2,31 +2,27 @@
 <html>
   <head>
     <title>Round Physics</title>
-
-    <link rel="stylesheet" href="style/style.css">
   </head>
 
   <body onload="init()">
-    <canvas id="cvs" width="1200" height="800"></canvas>
   </body>
 
-  <script src="src/math/vec2.js"></script>
+  <script src="src/util/vec2.js"></script>
+  <script src="src/util/random.js"></script>
   <script src="src/body/particle.js"></script>
+  <script src="src/behavior/wander.js"></script>
+  <script src="src/integrator/tcv.js"></script>
+  <script src="src/handler/canvasHandler.js"></script>
   <script src="src/engine/roundPhysics.js"></script>
   <script>
   function init() {
-     var rp = new RoundPhysics(document.getElementById('cvs'), '#111111',
-      new Vec2(0, 2500), new Vec2(-300, 0));
+     var rp = new RoundPhysics('#111111');
 
-     rp.addParticle(new Particle(3, 30, 'blue', 200, 100))
-      .addParticle(new Particle(8, 50, 'green', 400, 100))
-      .addParticle(new Particle(20, 80, 'red', 600, 100))
-      .addParticle(new Particle(1, 10, 'yellow', 800, 100))
-      .addParticle(new Particle(4, 40, 'orange', 300, 200))
-      .addParticle(new Particle(0.5, 8, 'purple', 500, 200))
-      .addParticle(new Particle(2.5, 20, 'magenta', 700, 200))
-      .addParticle(new Particle(1.5, 10, 'cyan', 900, 200))
-      .start();
+     for (var p = 0; p < 50; ++p) {
+        rp.addBody(new Particle().addBehavior(new Wander(0.5, 10000)));
+     }
+
+     rp.start();
   }
   </script>
 </html>

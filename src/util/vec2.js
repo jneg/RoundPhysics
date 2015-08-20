@@ -13,6 +13,15 @@ function Vec2(x, y) {
 }
 
 /**
+ * Returns the string representation of |this| Vec2.
+ *
+ * @return {String} the string representation of |this| Vec2
+ */
+Vec2.prototype.toString = function() {
+   return '{Vec2} x: ' + this.x + ', y: ' + this.y;
+}
+
+/**
  * Returns true if |this| equals |v|, otherwise false.
  * Two vectors are equal if their x and y properties are equal.
  *
@@ -33,24 +42,12 @@ Vec2.prototype.length = function() {
 }
 
 /**
- * Returns the angle in radians from the x-axis of |this| vector.
- * 
- * @return {Number} angle of the vector from the x-axis in radians
+ * Returns the angle of |this| vector.
+ *
+ * @return {Number} angle in radians
  */
 Vec2.prototype.angle = function() {
-   return Math.atan(this.y / this.x);
-}
-
-/**
- * Returns the coordinate-modified vector with the axis rotated
- * by |angle| in radians.
- * 
- * @param {Number} angle - angle in radians to rotate the axis
- * @return {Vec2} the coordinate-modified vector with the axis rotated
- */
-Vec2.prototype.axis = function(angle) {
-   return new Vector(this.x * Math.cos(angle) + this.y * Math.sin(angle),
-    this.x * Math.sin(angle) + this.y * Math.cos(angle));
+   return Math.atan2(this.y, this.x)
 }
 
 /**
@@ -81,15 +78,27 @@ Vec2.prototype.scale = function(factor) {
 }
 
 /**
- * Sets |this| x and y properties to |x| and |y|.
+ * Returns the normalized vector of |this|.
  *
- * @param {Number} x - the x property
- * @param {Number} y - the y property
+ * @return {Vec2} the normalized vector
+ */
+Vec2.prototype.normalize = function() {
+   if (this.equals(new Vec2(0, 0))) {
+      return new Vec2(0, 0);
+   }
+
+   return new Vec2().mutableSet(this).mutableScale(1 / this.length());
+}
+
+/**
+ * Sets |this| to |v|.
+ *
+ * @param {Vec2} v - the vector to set |this| to
  * @return {Vec2} |this| vector
  */
-Vec2.prototype.mutableSet = function(x, y) {
-   this.x = x;
-   this.y = y;
+Vec2.prototype.mutableSet = function(v) {
+   this.x = v.x;
+   this.y = v.y;
 
    return this;
 }
@@ -126,9 +135,27 @@ Vec2.prototype.mutableSub = function(v) {
  * @param {Number} factor - the coefficient to multiply |this| by
  * @return {Vec2} |this| vector
  */
-Vec2.prototype.mustableScale = function(factor) {
+Vec2.prototype.mutableScale = function(factor) {
    this.x *= factor;
    this.y *= factor;
+
+   return this;
+}
+
+/**
+ * Rotates |this| vector by |angle|.
+ *
+ * @param {Number} angle in radians to rotate |this| vector
+ * @return {Vec2} |this| vector
+ */
+Vec2.prototype.mutableAngle = function(angle) {
+   var cs = Math.cos(angle);
+   var sn = Math.sin(angle);
+   var px = this.x * cs - this.y * sn;
+   var py = this.x * sn + this.y * cs;
+
+   this.x = px;
+   this.y = py;
 
    return this;
 }
