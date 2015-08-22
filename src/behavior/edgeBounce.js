@@ -1,19 +1,41 @@
 /**
- * Creates and returns an EdgeBounce instance.
- * An EdgeBounce instance is a behavior which makes its applied body
- * bounce from the edge of the canvas when colliding with it.
+ * @module EdgeBounce
+ * @version 0.0.1
+ * @author Javon Negahban
  *
+ * @description An EdgeBounce instance is a behavior which makes its applied
+ * body bounce from the edge of the canvas when colliding with it with
+ * conserved energy.
+ *
+ * EdgeBounce.prototype.toString()
+ * EdgeBounce.prototype.apply(body, dt)
+ */
+
+/**
  * @constructor
  * @return {EdgeBounce} |this| EdgeBounce instance
+ *
+ * @description Constructs and returns an EdgeBounce instance.
  */
 function EdgeBounce() {}
 
 /**
- * Apply |this| EdgeBounce behavior onto |body|.
+ * @method toString
+ * @return {String} string representation of |this| EdgeBounce instance
  *
+ * @description Returns the string representation of |this| EdgeBounce instance.
+ */
+EdgeBounce.prototype.toString = function() {
+   return '{EdgeBounce}';
+}
+
+/**
+ * @method apply
  * @param {Body} body - the body to apply EdgeBounce to
  * @param {Number} dt - the change in time
  * @return {EdgeBounce} |this| EdgeBounce instance
+ *
+ * @description Apply |this| EdgeBounce behavior onto |body|.
  */
 EdgeBounce.prototype.apply = function(body, dt) {
    if (body.pos.x - body.radius < -.1) {
@@ -33,13 +55,4 @@ EdgeBounce.prototype.apply = function(body, dt) {
    }
 
    return this;
-}
-
-/**
- * Returns the string representation of |this| EdgeBounce instance.
- *
- * @return {String} string representation of |this| EdgeBounce instance
- */
-EdgeBounce.prototype.toString = function() {
-   return '{EdgeBounce}';
 }

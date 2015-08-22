@@ -1,10 +1,24 @@
 /**
- * Creates and returns a CanvasHandler instance. This instance
- * creates, draws, and handles mouse events on the canvas.
+ * @module CanvasHandler
+ * @version 0.0.1
+ * @author Javon Negahban
  *
+ * @description CanvasHandler is an object which creates the canvas, draws
+ * on the canvas, and handles mouse events of the canvas.
+ *
+ * CanvasHandler.prototype.toString()
+ * CanvasHandler.prototype.changeBgColor(bgColor)
+ * CanvasHandler.prototype.getMouse()
+ * CanvasHandler.prototype.draw(bodies)
+ * CanvasHandler.prototype.clearCanvas()
+ */
+
+/**
  * @constructor
- * @param {String} bgColor - the background color of the canvas
+ * @param {String} bgColor - the background color of the environment
  * @return {CanvasHandler} |this| CanvasHandler instance
+ *
+ * @description Creates and returns |this| CanvasHandler instance.
  */
 function CanvasHandler(bgColor) {
    this.changeBgColor(bgColor);
@@ -37,9 +51,23 @@ function CanvasHandler(bgColor) {
 }
 
 /**
- * Changes the background color of the environment.
+ * @method toString
+ * @return {String} the string representation of |this| CanvasHandler instance
  *
+ * @description Returns the string representation of |this| CanvasHandler
+ * instance.
+ */
+CanvasHandler.prototype.toString = function() {
+   return '{CanvasHandler} bgColor: ' + this.bgColor + ', mouse: '
+    + this.mouse;
+}
+
+/**
+ * @method changeBgColor
+ * @param {String} bgColor - the background color to change to
  * @return {CanvasHandler} |this| CanvasHandler instance
+ *
+ * @description Changes the background color of the environment.
  */
 CanvasHandler.prototype.changeBgColor = function(bgColor) {
    this.bgColor = bgColor;
@@ -49,20 +77,21 @@ CanvasHandler.prototype.changeBgColor = function(bgColor) {
 }
 
 /**
- * Returns the mouse vector.
- *
+ * @method getMouse
  * @return {Vec2} the mouse vector
+ *
+ * @description Returns the mouse vector.
  */
 CanvasHandler.prototype.getMouse = function() {
    return this.mouse;
 }
 
 /**
- * Draws the |bgColor| and the |bodies| onto the canvas.
- *
- * @param {String} bgColor - the background color of the canvas
+ * @method draw
  * @param {Body[]} bodies - the bodies to draw on the canvas
  * @return {CanvasHandler} |this| CanvasHandler instance
+ *
+ * @description Draws the |bgColor| and the |bodies| onto the canvas.
  */
 CanvasHandler.prototype.draw = function(bodies) {
    this.clearCanvas();
@@ -75,9 +104,10 @@ CanvasHandler.prototype.draw = function(bodies) {
 }
 
 /**
- * Clears the canvas with the bgColor.
- *
+ * @method clearCanvas
  * @return {CanvasHandler} |this| CanvasHandler instance
+ *
+ * @description Clears the canvas with the bgColor.
  */
 CanvasHandler.prototype.clearCanvas = function() {
    this.context.beginPath();
@@ -86,14 +116,4 @@ CanvasHandler.prototype.clearCanvas = function() {
    this.context.fill();
 
    return this;
-}
-
-/**
- * Returns the string representation of |this| CanvasHandler instance.
- *
- * @return {String} the string representation of |this| CanvasHandler instance
- */
-CanvasHandler.prototype.toString = function() {
-   return '{CanvasHandler} bgColor: ' + this.bgColor + ', mouse: '
-    + this.mouse;
 }
