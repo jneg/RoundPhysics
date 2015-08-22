@@ -33,5 +33,5 @@ ImprovedEuler.prototype.integrate = function(bodies, dt) {
  * @return {String} string representation of |this| ImprovedEuler integrator
  */
 ImprovedEuler.prototype.toString = function() {
-   return 'ImprovedEuler';
+   return '{ImprovedEuler}';
 }

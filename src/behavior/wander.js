@@ -19,15 +19,16 @@ function Wander(insanity, speed) {
  * Apply |this| Wander behavior onto |body|.
  *
  * @param {Body} body - the body to apply Wander to
+ * @param {Number} dt - the change in time
  * @return {Wander} |this| Wander instance
  */
-Wander.prototype.apply = function(body) {
-   var unitPrev = new Vec2(1, 0).mutableAngle(this.angle);
+Wander.prototype.apply = function(body, dt) {
+   var unitPrev = new Vec2(1, 0).mutableRotate(this.angle);
    this.angle += (Math.random() - 0.5) * this.insanity;
-   var unitNew = new Vec2(1, 0).mutableAngle(this.angle);
+   var unitNew = new Vec2(1, 0).mutableRotate(this.angle);
 
-   body.applyForce(unitPrev.scale(-1 * this.speed));
-   body.applyForce(unitNew.scale(this.speed));
+   body.applyForce(unitPrev.scale(-1 * this.speed / dt));
+   body.applyForce(unitNew.scale(this.speed / dt));
 }
 
 /**

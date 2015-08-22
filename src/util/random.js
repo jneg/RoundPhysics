@@ -26,13 +26,22 @@ Random.prototype.number = function(min, max) {
  * @return {String} random color
  */
 Random.prototype.color = function() {
-   var colors = ['BlueViolet', 'Chartreuse', 'Coral',
-    'CornflowerBlue', 'Crimson', 'DeepPink', 'DeepSkyBlue', 'Fuchsia',
-    'Gold', 'GreenYellow', 'HotPink', 'LightGreen', 'LightPink',
-    'LightSalmon', 'LightSeaGreen', 'LightSkyBlue', 'LightSteelBlue',
-    'MediumSlateBlue', 'MediumTurquoise', 'MediumVioletRed', 'Orange',
-    'OrangeRed', 'Orchid', 'Plum', 'Red', 'RoyalBlue', 'SlateBlue',
-    'Tomato', 'Violet', 'YellowGreen'];
+   var colors = ['BlueViolet', 'Chartreuse', 'Coral'
+    , 'CornflowerBlue', 'Crimson', 'DeepPink', 'DeepSkyBlue', 'Fuchsia'
+    , 'Gold', 'GreenYellow', 'HotPink', 'LightGreen', 'LightPink'
+    , 'LightSalmon', 'LightSeaGreen', 'LightSkyBlue', 'LightSteelBlue'
+    , 'MediumSlateBlue', 'MediumTurquoise', 'MediumVioletRed', 'Orange'
+    , 'OrangeRed', 'Orchid', 'Plum', 'Red', 'RoyalBlue', 'SlateBlue'
+    , 'Tomato', 'Violet', 'YellowGreen'];
 
    return colors[Math.floor(Math.random() * colors.length)];
+}
+
+/**
+ * Returns the string representation of |this| Random instance.
+ *
+ * @return {String} the string representation of |this| Random instance
+ */
+Random.prototype.toString = function() {
+   return '{Random}';
 }

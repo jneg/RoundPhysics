@@ -1,11 +1,11 @@
 /**
- * Constructs a Vec2 instance with an |x| and |y| property. Vec2 represents
+ * Constructs a vector instance with an |x| and |y| property. Vec2 represents
  * a 2 dimensional vector.
  *
  * @constructor
  * @param {Number} x - the x property of the vector
  * @param {Number} y - the y property of the vector
- * @return {Vec2} |this| Vec2 instance
+ * @return {Vec2} |this| vector instance
  */
 function Vec2(x, y) {
    this.x = x || 0;
@@ -13,9 +13,9 @@ function Vec2(x, y) {
 }
 
 /**
- * Returns the string representation of |this| Vec2.
+ * Returns the string representation of |this| vector instance.
  *
- * @return {String} the string representation of |this| Vec2
+ * @return {String} the string representation of |this| vector instance
  */
 Vec2.prototype.toString = function() {
    return '{Vec2} x: ' + this.x + ', y: ' + this.y;
@@ -35,7 +35,7 @@ Vec2.prototype.equals = function(v) {
 /**
  * Returns the length of |this| vector.
  * 
- * @return {Number} length of |this| vector
+ * @return {Number} length of |this| vector instance
  */
 Vec2.prototype.length = function() {
    return Math.sqrt(this.x * this.x + this.y * this.y);
@@ -94,7 +94,7 @@ Vec2.prototype.normalize = function() {
  * Sets |this| to |v|.
  *
  * @param {Vec2} v - the vector to set |this| to
- * @return {Vec2} |this| vector
+ * @return {Vec2} |this| vector instance
  */
 Vec2.prototype.mutableSet = function(v) {
    this.x = v.x;
@@ -107,7 +107,7 @@ Vec2.prototype.mutableSet = function(v) {
  * Adds |v| to |this| and returns |this|.
  * 
  * @param {Vec2} v - the vector to add to |this|
- * @return {Vec2} |this| vector
+ * @return {Vec2} |this| vector instance
  */
 Vec2.prototype.mutableAdd = function(v) {
    this.x += v.x;
@@ -120,7 +120,7 @@ Vec2.prototype.mutableAdd = function(v) {
  * Subtracts |v| from |this| and returns |this|.
  * 
  * @param {Vec2} v - the vector to subtract from |this|
- * @return {Vec2} |this| vector
+ * @return {Vec2} |this| vector instance
  */
 Vec2.prototype.mutableSub = function(v) {
    this.x -= v.x;
@@ -133,7 +133,7 @@ Vec2.prototype.mutableSub = function(v) {
  * Scales |this| by |factor| and returns |this|.
  * 
  * @param {Number} factor - the coefficient to multiply |this| by
- * @return {Vec2} |this| vector
+ * @return {Vec2} |this| vector instance
  */
 Vec2.prototype.mutableScale = function(factor) {
    this.x *= factor;
@@ -146,16 +146,16 @@ Vec2.prototype.mutableScale = function(factor) {
  * Rotates |this| vector by |angle|.
  *
  * @param {Number} angle in radians to rotate |this| vector
- * @return {Vec2} |this| vector
+ * @return {Vec2} |this| vector instance
  */
-Vec2.prototype.mutableAngle = function(angle) {
+Vec2.prototype.mutableRotate = function(angle) {
    var cs = Math.cos(angle);
    var sn = Math.sin(angle);
-   var px = this.x * cs - this.y * sn;
-   var py = this.x * sn + this.y * cs;
+   var xNew = this.x * cs - this.y * sn;
+   var yNew = this.x * sn + this.y * cs;
 
-   this.x = px;
-   this.y = py;
+   this.x = xNew;
+   this.y = yNew;
 
    return this;
 }

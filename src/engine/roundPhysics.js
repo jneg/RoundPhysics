@@ -95,7 +95,8 @@ RoundPhysics.prototype.frame = function(timestamp) {
    this.progress = timestamp;
 
    this.bodies.forEach(function(body) {
-      body.applyBehaviors();
+      body.applyBehaviors(this.dt);
+      console.log(body.kineticEnergy());
    }, this);
 
    this.integrator.integrate(this.bodies, this.dt);
@@ -104,4 +105,15 @@ RoundPhysics.prototype.frame = function(timestamp) {
    window.requestAnimFrame(this.frame.bind(this));
 
    return this;
+}
+
+/**
+ * Returns the string representation of |this| RoundPhysics context.
+ *
+ * @return {String} the string representation of |this| RoundPhysics context
+ */
+RoundPhysics.prototype.toString = function() {
+   return '{RoundPhysics} bodies: ' + this.bodies + ', integrator: '
+    + this.integrator + ', canvasHandler: ' + this.canvasHandler
+    + ', progress: ' + this.progress + ', dt: ' + this.dt;
 }

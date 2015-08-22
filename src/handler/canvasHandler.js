@@ -31,8 +31,8 @@ function CanvasHandler(bgColor) {
    this.canvas.addEventListener('mousemove', (function(e) {
       var viewport = this.canvas.getBoundingClientRect();
 
-      this.mouse.mutableSet(new Vec2(e.clientX - viewport.left,
-       e.clientY - viewport.top));
+      this.mouse.mutableSet(new Vec2(e.clientX - viewport.left
+       , e.clientY - viewport.top));
    }).bind(this));
 }
 
@@ -86,4 +86,14 @@ CanvasHandler.prototype.clearCanvas = function() {
    this.context.fill();
 
    return this;
+}
+
+/**
+ * Returns the string representation of |this| CanvasHandler instance.
+ *
+ * @return {String} the string representation of |this| CanvasHandler instance
+ */
+CanvasHandler.prototype.toString = function() {
+   return '{CanvasHandler} bgColor: ' + this.bgColor + ', mouse: '
+    + this.mouse;
 }

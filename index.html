@@ -12,6 +12,8 @@
   <script src="src/body/particle.js"></script>
   <script src="src/behavior/wander.js"></script>
   <script src="src/behavior/edgeWrap.js"></script>
+  <script src="src/behavior/edgeBounce.js"></script>
+  <script src="src/behavior/constantForce.js"></script>
   <script src="src/integrator/improvedEuler.js"></script>
   <script src="src/handler/canvasHandler.js"></script>
   <script src="src/engine/roundPhysics.js"></script>
@@ -19,11 +21,12 @@
   function init() {
      var rp = new RoundPhysics('#111111');
 
-     for (var p = 0; p < 50; ++p) {
+     for (var p = 0; p < 1; ++p) {
+        var ptcl = new Particle();
+        ptcl.vel = new Vec2(0, 100);
         rp
-         .addBody(new Particle()
-         .addBehavior(new Wander(0.5, 10000))
-         .addBehavior(new EdgeWrap()));
+         .addBody(ptcl
+         .addBehavior(new EdgeBounce()));
      }
 
      rp.start();

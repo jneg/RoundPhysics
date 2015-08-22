@@ -13,11 +13,11 @@ function Particle(mass, radius, color, x, y) {
    if (arguments.length < 5) {
       var rand = new Random();
 
-      this.mass = rand.number(0.2, 4);
-      this.radius = Math.floor(this.mass * 5);
+      this.mass = rand.number(0.5, 5);
+      this.radius = this.mass * 4;
       this.color = rand.color();
-      this.pos = new Vec2(Math.floor(rand.number(0, window.innerWidth)),
-       Math.floor(rand.number(0, window.innerHeight)));
+      this.pos = new Vec2(Math.floor(rand.number(100, window.innerWidth - 100))
+       , Math.floor(rand.number(100, window.innerHeight - 100)));
    } else {
       this.mass = mass;
       this.radius = radius;
@@ -34,7 +34,7 @@ function Particle(mass, radius, color, x, y) {
 /**
  * Returns the diameter of |this| Particle.
  *
- * @return {Number} the diameter of |this| Particle
+ * @return {Number} the diameter of |this| Particle instance
  */
 Particle.prototype.diameter = function() {
    return 2 * this.radius;
@@ -43,7 +43,7 @@ Particle.prototype.diameter = function() {
 /**
  * Returns the circumference of |this| Particle.
  *
- * @return {Number} the circumference of |this| Particle
+ * @return {Number} the circumference of |this| Particle instance
  */
 Particle.prototype.circumference = function() {
    return Math.PI * this.diameter();
@@ -52,7 +52,7 @@ Particle.prototype.circumference = function() {
 /**
  * Returns the area of |this| Particle.
  *
- * @return {Number} the area of |this| Particle
+ * @return {Number} the area of |this| Particle instance
  */
 Particle.prototype.area = function() {
    return Math.PI * this.radius * this.radius;
@@ -61,7 +61,7 @@ Particle.prototype.area = function() {
 /**
  * Returns the area density of |this| Particle.
  *
- * @return {Number} the area density of |this| Particle
+ * @return {Number} the area density of |this| Particle instance
  */
 Particle.prototype.density = function() {
    return this.mass / this.area();
@@ -70,12 +70,13 @@ Particle.prototype.density = function() {
 /**
  * Returns the string representation of |this| Particle.
  *
- * @return {String} the string representation of |this| Particle
+ * @return {String} the string representation of |this| Particle instance
  */
 Particle.prototype.toString = function() {
    return '{Particle} mass: ' + this.mass + ', radius: ' + this.radius
     + ', color: ' + this.color + ', pos: ' + this.pos + ', vel: ' + this.vel
-    + ', acc: ' + this.acc + ', behaviors: ' + this.behaviors.toString();
+    + ', acc: ' + this.acc + ', behaviors: ' + this.behaviors.toString()
+    + ', kinetic energy: ' + this.kineticEnergy();
 }
 
 /**
@@ -86,8 +87,8 @@ Particle.prototype.toString = function() {
  * @return {Boolean} true if |this| equals |oParticle|, otherwise false
  */
 Particle.prototype.equals = function(oParticle) {
-   return this.mass === oParticle.mass && this.radius === oParticle.radius &&
-    this.color === oParticle.color;
+   return this.mass === oParticle.mass && this.radius === oParticle.radius
+    && this.color === oParticle.color;
 }
 
 /**
@@ -98,6 +99,17 @@ Particle.prototype.equals = function(oParticle) {
  */
 Particle.prototype.contains = function(point) {
    return this.pos.sub(point).length() <= this.radius;
+}
+
+/**
+ * Returns the kinetic energy of |this| Particle instance.
+ *
+ * @return {Number} the kinetic energy of |this| Particle instance
+ */
+Particle.prototype.kineticEnergy = function() {
+   var velAbs = this.vel.length();
+
+   return 0.5 * this.mass * velAbs * velAbs;
 }
 
 /**
@@ -154,11 +166,12 @@ Particle.prototype.delBehavior = function(behavior) {
 /**
  * Applies all of |this| Particle's behaviors to itself.
  *
+ * @param {Number} dt - the change in time
  * @return {Particle} |this| Particle instance
  */
-Particle.prototype.applyBehaviors = function() {
+Particle.prototype.applyBehaviors = function(dt) {
    this.behaviors.forEach(function(behavior) {
-      behavior.apply(this);
+      behavior.apply(this, dt);
    }, this);
 
    return this;

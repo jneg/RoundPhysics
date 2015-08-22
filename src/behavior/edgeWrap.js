@@ -12,9 +12,10 @@ function EdgeWrap() {}
  * Apply |this| EdgeWrap behavior onto |body|.
  *
  * @param {Body} body - the body to apply EdgeWrap to
+ * @param {Number} dt - the change in time
  * @return {EdgeWrap} |this| EdgeWrap instance
  */
-EdgeWrap.prototype.apply = function(body) {
+EdgeWrap.prototype.apply = function(body, dt) {
    if (body.pos.x + body.radius < 0) {
       body.pos.x = window.innerWidth + body.radius;
    } else if (body.pos.x - body.radius > window.innerWidth) {
