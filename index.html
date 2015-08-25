@@ -14,6 +14,7 @@
   <script src="src/behavior/edgeWrap.js"></script>
   <script src="src/behavior/edgeBounce.js"></script>
   <script src="src/behavior/constantForce.js"></script>
+  <script src="src/behavior/gravitation.js"></script>
   <script src="src/integrator/improvedEuler.js"></script>
   <script src="src/handler/canvasHandler.js"></script>
   <script src="src/engine/roundPhysics.js"></script>
@@ -26,7 +27,7 @@
         rp
          .addBody(ptcl
          .addBehavior(new EdgeBounce())
-         .addBehavior(new ConstantForce(new Vec2(70, 100))));
+         .addBehavior(new Gravitation(new Vec2(400, 400), 100, 200)));
      }
 
      rp.start();
