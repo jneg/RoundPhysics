@@ -1,11 +1,12 @@
 /**
  * @module CanvasHandler
- * @version 0.0.3
+ * @version 0.0.4
  * @author Javon Negahban
  *
  * @description CanvasHandler is an object which creates the canvas, draws
  * on the canvas, and handles mouse events of the canvas.
  *
+ * CanvasHandler()
  * CanvasHandler.prototype.toString()
  * CanvasHandler.prototype.changeBgColor(bgColor)
  * CanvasHandler.prototype.getMouse()

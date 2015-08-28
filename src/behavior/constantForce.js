@@ -1,11 +1,12 @@
 /**
  * @module ConstantForce
- * @version 0.0.1
+ * @version 0.0.2
  * @author Javon Negahban
  *
  * @description A ConstantForce instance is a behavior which applies a
  * constant force to its applied body.
  *
+ * ConstantForce(force)
  * ConstantForce.prototype.toString()
  * ConstantForce.prototype.apply(body, dt)
  */

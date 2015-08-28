@@ -1,10 +1,11 @@
 /**
  * @module Random
- * @version 0.0.1
+ * @version 0.0.2
  * @author Javon Negahban
  *
  * @description A Random object returns random entities.
  *
+ * Random()
  * Random.prototype.toString()
  * Random.prototype.number(min, max)
  * Random.prototype.color()

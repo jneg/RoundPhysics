@@ -1,11 +1,12 @@
 /**
  * @module Vec2
- * @version 0.0.1
+ * @version 0.0.2
  * @author Javon Negahban
  *
  * @description Vec2 is a vector object which holds an x and y property
  * resembling the x and y axes on a cartesian plane.
  *
+ * Vec2(x, y)
  * Vec2.prototype.toString()
  * Vec2.prototype.equals(v)
  * Vec2.prototype.length()

@@ -1,12 +1,13 @@
 /**
  * @module Wander
- * @version 0.0.1
+ * @version 0.0.2
  * @author Javon Negahban
  *
  * @description A Wander instance is a behavior which makes its applied
  * body roam with velocity in random direction based on the degree of
  * insanity: the amount of rotation, and the speed.
  *
+ * Wander(insanity, speed)
  * Wander.prototype.toString()
  * Wander.prototype.apply(body, dt)
  */

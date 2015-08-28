@@ -1,6 +1,6 @@
 /**
  * @module Gravitation
- * @version 0.1.0
+ * @version 0.1.1
  * @author Javon Negahban
  *
  * @description A Gravitation instance is a behavior which applies
@@ -11,6 +11,7 @@
  * distance between the core and the body, squared. The radius specifies
  * the minimum distance required for the gravitational force to be applied.
  *
+ * Gravitation(positionCb, strength, radius)
  * Gravitation.prototype.toString()
  * Gravitation.prototype.apply(body, dt)
  */

@@ -1,12 +1,13 @@
 /**
  * @module EdgeBounce
- * @version 0.0.1
+ * @version 0.0.2
  * @author Javon Negahban
  *
  * @description An EdgeBounce instance is a behavior which makes its applied
  * body bounce from the edge of the canvas when colliding with it with
  * conserved energy.
  *
+ * EdgeBounce()
  * EdgeBounce.prototype.toString()
  * EdgeBounce.prototype.apply(body, dt)
  */

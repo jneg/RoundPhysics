@@ -1,6 +1,6 @@
 /**
  * @module ImprovedEuler
- * @version 0.0.1
+ * @version 0.0.2
  * @author Javon Negahban
  *
  * @description ImprovedEuler is an integrator which integrates for position
@@ -9,6 +9,7 @@
  * pf = pi + vi * dt + 0.5 * ai * dt * dt
  * vf = vi + ai * dt
  *
+ * ImprovedEuler()
  * ImprovedEuler.prototype.toString()
  * ImprovedEuler.prototype.integrate(bodies, dt)
  */

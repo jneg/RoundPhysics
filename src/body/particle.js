@@ -1,12 +1,13 @@
 /**
  * @module Particle
- * @version 0.0.1
+ * @version 0.0.2
  * @author Javon Negahban
  *
  * @description A Particle instance is a circle with physical properties:
  * mass, radius, and color, motion vectors: position, velocity, and
  * acceleration, and behaviors: actions that affect the Particle.
  *
+ * Particle(mass, radius, color, x, y)
  * Particle.prototype.toString()
  * Particle.prototype.equals(p)
  * Particle.prototype.diameter()

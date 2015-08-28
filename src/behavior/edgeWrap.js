@@ -1,11 +1,12 @@
 /**
  * @module EdgeWrap
- * @version 0.0.1
+ * @version 0.0.2
  * @author Javon Negahban
  *
  * @description An EdgeWrap instance is a behavior which makes its applied
  * body wrap around to the opposite edge of the canvas when leaving it.
  *
+ * EdgeWrap()
  * EdgeWrap.prototype.toString()
  * EdgeWrap.prototype.apply(body, dt)
  */

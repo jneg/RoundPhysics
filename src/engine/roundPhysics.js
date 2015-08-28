@@ -1,6 +1,6 @@
 /**
  * @module RoundPhysics
- * @version 0.2.0
+ * @version 0.2.1
  * @author Javon Negahban
  *
  * @description RoundPhysics is an engine context which handles creation
@@ -8,6 +8,7 @@
  * The context is in charge of frame logic and managing these utilities
  * to demonstrate a physics engine.
  *
+ * RoundPhysics()
  * RoundPhysics.prototype.toString()
  * RoundPhysics.prototype.changeBgColor(bgColor)
  * RoundPhysics.prototype.getMouse()
