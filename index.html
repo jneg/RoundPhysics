@@ -30,7 +30,11 @@
          .addBehavior(new EdgeBounce())
          .addBehavior(new Gravitation(function() {
             return rp.getMouse();
-         }, 100, 200)));
+         }, function() {
+            return 500;
+         }, function() {
+            return 100;
+         })));
      }
 
      rp.start();
