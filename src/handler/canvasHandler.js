@@ -1,6 +1,6 @@
 /**
  * @module CanvasHandler
- * @version 0.0.2
+ * @version 0.0.3
  * @author Javon Negahban
  *
  * @description CanvasHandler is an object which creates the canvas, draws
@@ -20,14 +20,15 @@
  *
  * @description Creates and returns |this| CanvasHandler instance.
  */
-function CanvasHandler(bgColor) {
-   this.changeBgColor(bgColor);
+function CanvasHandler() {
    this.canvas = document.createElement('canvas');
    this.canvas.style.display = 'block';
    this.canvas.width = window.innerWidth;
    this.canvas.height = window.innerHeight;
    document.body.style.margin = '0px';
    document.body.appendChild(this.canvas);
+
+   this.changeBgColor('#ffffff');
 
    this.context = this.canvas.getContext('2d');
    this.context.globalCompositeOperation = 'source-over';
@@ -71,7 +72,7 @@ CanvasHandler.prototype.toString = function() {
  */
 CanvasHandler.prototype.changeBgColor = function(bgColor) {
    this.bgColor = bgColor;
-   document.body.style.backgroundColor = this.bgColor;
+   document.body.style.backgroundColor = bgColor;
 
    return this;
 }

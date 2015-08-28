@@ -1,6 +1,6 @@
 /**
  * @module RoundPhysics
- * @version 0.1.0
+ * @version 0.2.0
  * @author Javon Negahban
  *
  * @description RoundPhysics is an engine context which handles creation
@@ -27,10 +27,10 @@
  * In addition, it does frame logic to coordinate all the modules
  * of the library.
  */
-function RoundPhysics(bgColor) {
+function RoundPhysics() {
+   this.canvasHandler = new CanvasHandler();
    this.bodies = [];
    this.integrator = new ImprovedEuler();
-   this.canvasHandler = new CanvasHandler(bgColor);
    this.progress = 0;
    this.dt = 0;
 

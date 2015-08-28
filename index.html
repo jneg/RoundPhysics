@@ -20,7 +20,8 @@
   <script src="src/engine/roundPhysics.js"></script>
   <script>
   function init() {
-     var rp = new RoundPhysics('#111111');
+     var rp = new RoundPhysics();
+     rp.changeBgColor('#111111');
 
      for (var p = 0; p < 1; ++p) {
         var ptcl = new Particle();
