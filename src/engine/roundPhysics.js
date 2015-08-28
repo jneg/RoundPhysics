@@ -1,6 +1,6 @@
 /**
  * @module RoundPhysics
- * @version 0.0.1
+ * @version 0.1.0
  * @author Javon Negahban
  *
  * @description RoundPhysics is an engine context which handles creation
@@ -10,6 +10,7 @@
  *
  * RoundPhysics.prototype.toString()
  * RoundPhysics.prototype.changeBgColor(bgColor)
+ * RoundPhysics.prototype.getMouse()
  * RoundPhysics.prototype.addBody(body)
  * RoundPhysics.prototype.delBody(body)
  * RoundPhysics.prototype.start()
@@ -67,9 +68,20 @@ RoundPhysics.prototype.toString = function() {
  * RoundPhysics context.
  */
 RoundPhysics.prototype.changeBgColor = function(bgColor) {
-   canvasHandler.changeBgColor(bgColor);
+   this.canvasHandler.changeBgColor(bgColor);
 
    return this;
+}
+
+/**
+ * @method getMouse
+ * @return {Vec2} the mouse position vector on the canvas
+ *
+ * @description Returns the mouse position vector on the canvas of |this|
+ * RoundPhysics context.
+ */
+RoundPhysics.prototype.getMouse = function() {
+   return this.canvasHandler.getMouse();
 }
 
 /**

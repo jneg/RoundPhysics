@@ -1,6 +1,6 @@
 /**
  * @module CanvasHandler
- * @version 0.0.1
+ * @version 0.0.2
  * @author Javon Negahban
  *
  * @description CanvasHandler is an object which creates the canvas, draws
@@ -78,9 +78,9 @@ CanvasHandler.prototype.changeBgColor = function(bgColor) {
 
 /**
  * @method getMouse
- * @return {Vec2} the mouse vector
+ * @return {Vec2} the mouse position vector
  *
- * @description Returns the mouse vector.
+ * @description Returns the mouse position vector.
  */
 CanvasHandler.prototype.getMouse = function() {
    return this.mouse;

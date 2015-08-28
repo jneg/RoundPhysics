@@ -27,7 +27,9 @@
         rp
          .addBody(ptcl
          .addBehavior(new EdgeBounce())
-         .addBehavior(new Gravitation(new Vec2(400, 400), 100, 200)));
+         .addBehavior(new Gravitation(function() {
+            return rp.getMouse();
+         }, 100, 200)));
      }
 
      rp.start();
